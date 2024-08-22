@@ -17,7 +17,7 @@ const HomeScreen: React.FC = () => {
 
   useEffect(() => {
     const fetchTracks = async () => {
-      const result = await searchTracks("top hits");
+      const result = await searchTracks("neffex");
       setTracks(result);
     };
     fetchTracks();

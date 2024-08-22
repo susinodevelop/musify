@@ -3,6 +3,7 @@ import { Image, Pressable, StyleSheet, View, Text } from "react-native";
 import { Track } from "../interfaces/Track";
 import { Audio } from "expo-av";
 import CircularProgressIcon from "./CircularProgressIcon";
+import { IconButton } from "react-native-paper";
 
 interface TrackCardProps {
   track: Track;
@@ -10,35 +11,66 @@ interface TrackCardProps {
 
 const TrackCard = ({ track }: TrackCardProps) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  const playSound = async (previewUrl: string) => {
+  const handleActionButton = async () => {
     if (sound) {
       await sound.unloadAsync();
       setSound(null);
+      setIsPlaying(false);
       return;
     }
     const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: previewUrl },
+      { uri: track.preview },
       { shouldPlay: true }
     );
     setSound(newSound);
-  };
+    setIsPlaying(true);
 
+    // Detect when the sound ends to reset the play/pause icon
+    newSound.setOnPlaybackStatusUpdate((status) => {
+      if (status.isLoaded && status.didJustFinish) {
+        setIsPlaying(false);
+        setSound(null);
+      }
+    });
+  };
   return (
-    <Pressable style={styles.card} onPress={() => playSound(track.preview)}>
+    <View style={styles.card}>
       <View>
-        <Image source={{ uri: track.album.cover }} style={styles.cover} />
+        <Image source={{ uri: track.album.cover_xl }} style={styles.cover} />
         {sound && (
           <View style={styles.progressIcon}>
             <CircularProgressIcon track={sound} />
           </View>
         )}
       </View>
-      <View style={styles.info}>
-        <Text style={styles.title}>{track.title}</Text>
-        <Text style={styles.artist}>{track.artist.name}</Text>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+        }}
+      >
+        <View style={styles.info}>
+          <Text style={styles.title}>{track.title}</Text>
+          <Text style={styles.artist}>{track.artist.name}</Text>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "flex-end",
+            justifyContent: "center",
+            marginRight: 30,
+          }}
+        >
+          <IconButton
+            icon={isPlaying ? "pause" : "play"}
+            size={24}
+            onPress={handleActionButton}
+          />
+        </View>
       </View>
-    </Pressable>
+    </View>
   );
 };
 
