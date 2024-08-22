@@ -4,7 +4,6 @@ import {
   StyleSheet,
   StatusBar as NativeStatusBar,
 } from "react-native";
-import SearchScreen from "./src/screens/SearchScreen";
 import * as NavigationBar from "expo-navigation-bar";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
