@@ -8,6 +8,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Navigator from "./src/navigation/Navigator";
+import { PaperProvider } from "react-native-paper";
 
 export default function App() {
   React.useEffect(() => {
@@ -16,10 +17,12 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" backgroundColor="black" />
-      <Navigator />
-    </SafeAreaView>
+    <PaperProvider>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="light" backgroundColor="black" />
+        <Navigator />
+      </SafeAreaView>
+    </PaperProvider>
   );
 }
 

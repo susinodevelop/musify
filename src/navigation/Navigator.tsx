@@ -6,6 +6,7 @@ import HomeScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SearchScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import LibraryDrawNavigator from "./LibraryDrawNavigator";
+import LibraryScreen from "@/screens/LibraryScreen";
 
 type IoniconsName = keyof typeof Ionicons.glyphMap;
 
@@ -44,7 +45,7 @@ const Navigator: React.FC = () => {
       >
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen name="Search" component={SearchScreen} />
-        <Tab.Screen name="Library" component={LibraryDrawNavigator} />
+        <Tab.Screen name="Library" component={LibraryScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     </NavigationContainer>

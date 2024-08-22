@@ -1,83 +1,163 @@
-import React from "react";
+import { Album } from "@/interfaces/Album";
+import { Artist } from "@/interfaces/Artist";
+import { Track } from "@/interfaces/Track";
 import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import LibraryDrawNavigator from "../navigation/LibraryDrawNavigator";
+  getRandomAlbums,
+  getRandomArtists,
+  getRandomTracks,
+} from "@/services/deezerService";
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, StyleSheet, Image } from "react-native";
+import { Appbar, Button, Card, Text, List } from "react-native-paper";
 
-const LibraryScreen = () => {
+const LibraryScreen: React.FC = () => {
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [artists, setArtists] = useState<Artist[]>([]);
+
+  useEffect(() => {
+    getRandomAlbums("a", 5).then(setAlbums);
+    getRandomTracks("a", 5).then(setTracks);
+    getRandomArtists("a", 5).then(setArtists);
+  }, []);
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Biblioteca</Text>
-        <Pressable>
-          <Text style={styles.searchPlaceholder}>Buscar en la Biblioteca</Text>
-        </Pressable>
-      </View>
-
-      <ScrollView style={styles.sidebar}>
-        <LibraryDrawNavigator />
-      </ScrollView>
-
       <ScrollView style={styles.mainContent}>
+        {/* Sección de Playlists */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Playlists</Text>
-          <Pressable style={styles.addButton}>
-            <Text style={styles.addButtonText}>Añadir Nueva Playlist</Text>
-          </Pressable>
-          <View style={styles.playlistGrid}>
-            {/* Repetir este bloque para cada playlist */}
-            <View style={styles.playlistItem}>
-              <Image
-                source={{ uri: "https://via.placeholder.com/150" }}
-                style={styles.playlistImage}
-              />
-              <Text style={styles.playlistName}>Mi Playlist Favorita</Text>
-              <Text style={styles.playlistCount}>10 canciones</Text>
-            </View>
-            {/* Fin del bloque */}
-          </View>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Playlists
+          </Text>
+          <Button mode="contained" onPress={() => {}} style={styles.addButton}>
+            Añadir Nueva Playlist
+          </Button>
+          <ScrollView horizontal>
+            {albums.map((album) => (
+              <Card style={styles.gridItem}>
+                <Card.Cover
+                  source={{ uri: album.cover_big }}
+                  style={styles.gridItemCover}
+                />
+                <Card.Content>
+                  <Text variant="titleMedium">Mi Playlist Favorita</Text>
+                  <Text variant="bodyMedium" style={styles.gridSubtitle}>
+                    10 canciones
+                  </Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </ScrollView>
         </View>
 
-        {/* Agrega más secciones como Canciones Favoritas, Álbumes, etc. */}
+        <View style={styles.section}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Canciones Favoritas
+          </Text>
+
+          <List.Section>
+            {tracks.map((track) => (
+              <List.Item
+                title={track.title}
+                description={`${track.artist.name} - ${track.album.title}`}
+                left={() => (
+                  <Image
+                    source={{ uri: track.album.cover }}
+                    width={50}
+                    height={50}
+                    borderRadius={5}
+                  />
+                )}
+              />
+            ))}
+          </List.Section>
+        </View>
+
+        <View style={styles.section}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Álbumes
+          </Text>
+          <ScrollView horizontal>
+            {albums.map((album) => (
+              <Card key={album.link} style={styles.gridItem}>
+                <Card.Cover
+                  source={{ uri: album.cover_xl }}
+                  style={styles.gridItemCover}
+                />
+                <Card.Content>
+                  <Text variant="titleMedium">{album.title}</Text>
+                  <Text variant="bodyMedium" style={styles.gridSubtitle}>
+                    {album.type}
+                  </Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={styles.section}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Artistas
+          </Text>
+          <ScrollView horizontal>
+            {artists.map((artist) => (
+              <Card key={artist.link} style={styles.gridItem}>
+                <Card.Cover
+                  source={{ uri: artist.picture_big }}
+                  style={styles.gridItemCover}
+                />
+                <Card.Content>
+                  <Text variant="titleMedium">{artist.name}</Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={styles.section}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Descargas
+          </Text>
+          <ScrollView horizontal>
+            {tracks.map((track) => (
+              <Card style={styles.gridItem}>
+                <Card.Cover
+                  source={{ uri: track.album.cover_big }}
+                  style={styles.gridItemCover}
+                />
+                <Card.Content>
+                  <Text variant="titleMedium">{track.title}</Text>
+                </Card.Content>
+              </Card>
+            ))}
+          </ScrollView>
+        </View>
+
+        <View style={styles.section}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Historial
+          </Text>
+          <List.Section>
+            {tracks.map((track) => (
+              <List.Item
+                title={track.title}
+                description={track.album.title}
+                left={() => <List.Icon icon="history" />}
+              />
+            ))}
+          </List.Section>
+        </View>
       </ScrollView>
     </View>
   );
 };
 
+export default LibraryScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  header: {
-    padding: 20,
-    backgroundColor: "#6200ee",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerTitle: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  searchPlaceholder: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  sidebar: {
-    backgroundColor: "#f4f4f4",
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-  },
-  menuItem: {
-    fontSize: 18,
-    paddingVertical: 10,
   },
   mainContent: {
     flex: 1,
@@ -87,45 +167,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
     marginBottom: 10,
   },
   addButton: {
-    backgroundColor: "#6200ee",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
     marginBottom: 10,
   },
-  addButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  playlistGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  playlistItem: {
-    width: "48%",
+  gridItem: {
+    width: 300,
+    height: 400,
+    marginHorizontal: 20,
     marginBottom: 15,
-    alignItems: "center",
   },
-  playlistImage: {
-    width: "100%",
-    height: 150,
-    borderRadius: 5,
+  gridItemCover: {
+    width: 300,
+    height: 300,
   },
-  playlistName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-  playlistCount: {
-    fontSize: 14,
+  gridSubtitle: {
     color: "#666",
   },
 });
-
-export default LibraryScreen;
