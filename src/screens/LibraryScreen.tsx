@@ -24,7 +24,6 @@ const LibraryScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.mainContent}>
-        {/* Sección de Playlists */}
         <View style={styles.section}>
           <Text variant="titleLarge" style={styles.sectionTitle}>
             Playlists
@@ -34,7 +33,7 @@ const LibraryScreen: React.FC = () => {
           </Button>
           <ScrollView horizontal>
             {albums.map((album) => (
-              <Card style={styles.gridItem}>
+              <Card key={album.link} style={styles.gridItem}>
                 <Card.Cover
                   source={{ uri: album.cover_big }}
                   style={styles.gridItemCover}
@@ -58,6 +57,7 @@ const LibraryScreen: React.FC = () => {
           <List.Section>
             {tracks.map((track) => (
               <List.Item
+                key={track.link}
                 title={track.title}
                 description={`${track.artist.name} - ${track.album.title}`}
                 left={() => (
@@ -120,7 +120,7 @@ const LibraryScreen: React.FC = () => {
           </Text>
           <ScrollView horizontal>
             {tracks.map((track) => (
-              <Card style={styles.gridItem}>
+              <Card key={track.link} style={styles.gridItem}>
                 <Card.Cover
                   source={{ uri: track.album.cover_big }}
                   style={styles.gridItemCover}
@@ -140,6 +140,7 @@ const LibraryScreen: React.FC = () => {
           <List.Section>
             {tracks.map((track) => (
               <List.Item
+                key={track.link}
                 title={track.title}
                 description={track.album.title}
                 left={() => <List.Icon icon="history" />}
