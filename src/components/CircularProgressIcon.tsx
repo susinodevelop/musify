@@ -22,13 +22,17 @@ const CircularProgressIcon = ({ track }: CircularProgressIconProps) => {
   const progressAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    
-      sound?.setOnPlaybackStatusUpdate(updateStatus);
-    
+    if (sound) {
+      sound.setOnPlaybackStatusUpdate(updateStatus);
+    }
+
+    return () => {
+      sound?.setOnPlaybackStatusUpdate(null);
+    };
   }, [sound]);
 
   const updateStatus = (status: AVPlaybackStatus) => {
-    if (status.isLoaded && !status.isBuffering) {
+    if (status.isLoaded && !status.isBuffering && status.isPlaying) {
       const playbackStatus = status as AVPlaybackStatusSuccess;
       const progress =
         playbackStatus.positionMillis / playbackStatus.durationMillis!;

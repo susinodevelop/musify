@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, FlatList, Text, StyleSheet } from "react-native";
-import { searchTracks } from "../services/deezerService";
+import { searchTracks } from "../services/audiusService";
 import { Track } from "../interfaces/Track";
 import TrackCard from "../components/TrackCard";
 

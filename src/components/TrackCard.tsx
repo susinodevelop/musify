@@ -4,6 +4,7 @@ import { Track } from "../interfaces/Track";
 import { Audio } from "expo-av";
 import CircularProgressIcon from "./CircularProgressIcon";
 import { IconButton } from "react-native-paper";
+import { getStreameableTrackMp3 } from "@/services/audiusService";
 
 interface TrackCardProps {
   track: Track;
@@ -21,7 +22,7 @@ const TrackCard = ({ track }: TrackCardProps) => {
       return;
     }
     const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: track.preview },
+      { uri: getStreameableTrackMp3(track.id) },
       { shouldPlay: true }
     );
     setSound(newSound);
@@ -38,7 +39,7 @@ const TrackCard = ({ track }: TrackCardProps) => {
   return (
     <View style={styles.card}>
       <View>
-        <Image source={{ uri: track.album.cover_xl }} style={styles.cover} />
+        <Image source={{ uri: track.artwork["150x150"] }} style={styles.cover} />
         {sound && (
           <View style={styles.progressIcon}>
             <CircularProgressIcon track={sound} />
@@ -52,8 +53,8 @@ const TrackCard = ({ track }: TrackCardProps) => {
         }}
       >
         <View style={styles.info}>
-          <Text style={styles.title}>{track.title}</Text>
-          <Text style={styles.artist}>{track.artist.name}</Text>
+          <Text style={styles.title}>{track.title}</Text> 
+           <Text style={styles.artist}>{track.user.name}</Text>
         </View>
         <View
           style={{

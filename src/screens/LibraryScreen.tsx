@@ -1,22 +1,22 @@
-import { Album } from "@/interfaces/Album";
 import { Artist } from "@/interfaces/Artist";
+import { Playlist } from "@/interfaces/Playlist";
 import { Track } from "@/interfaces/Track";
 import {
-  getRandomAlbums,
   getRandomArtists,
+  getRandomPlaylists,
   getRandomTracks,
-} from "@/services/deezerService";
+} from "@/services/audiusService";
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, Image } from "react-native";
 import { Appbar, Button, Card, Text, List } from "react-native-paper";
 
 const LibraryScreen: React.FC = () => {
-  const [albums, setAlbums] = useState<Album[]>([]);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [artists, setArtists] = useState<Artist[]>([]);
 
   useEffect(() => {
-    getRandomAlbums("a", 5).then(setAlbums);
+    getRandomPlaylists(5).then(setPlaylists);
     getRandomTracks("a", 5).then(setTracks);
     getRandomArtists("a", 5).then(setArtists);
   }, []);
@@ -32,16 +32,16 @@ const LibraryScreen: React.FC = () => {
             Añadir Nueva Playlist
           </Button>
           <ScrollView horizontal>
-            {albums.map((album) => (
-              <Card key={album.link} style={styles.gridItem}>
+            {playlists.map((playlist) => (
+              <Card key={playlist.id} style={styles.gridItem}>
                 <Card.Cover
-                  source={{ uri: album.cover_big }}
+                  source={{ uri: playlist.artwork["480x480"] }}
                   style={styles.gridItemCover}
                 />
                 <Card.Content>
-                  <Text variant="titleMedium">Mi Playlist Favorita</Text>
+                  <Text variant="titleMedium">{playlist.title}</Text>
                   <Text variant="bodyMedium" style={styles.gridSubtitle}>
-                    10 canciones
+                    {playlist.repost_count} - Canciones
                   </Text>
                 </Card.Content>
               </Card>
@@ -57,12 +57,12 @@ const LibraryScreen: React.FC = () => {
           <List.Section>
             {tracks.map((track) => (
               <List.Item
-                key={track.link}
+                key={track.id}
                 title={track.title}
-                description={`${track.artist.name} - ${track.album.title}`}
+                description={`${track.user.name} - ${track.genre}`}
                 left={() => (
                   <Image
-                    source={{ uri: track.album.cover }}
+                    source={{ uri: track.artwork["480x480"] }}
                     width={50}
                     height={50}
                     borderRadius={5}
@@ -75,35 +75,13 @@ const LibraryScreen: React.FC = () => {
 
         <View style={styles.section}>
           <Text variant="titleLarge" style={styles.sectionTitle}>
-            Álbumes
-          </Text>
-          <ScrollView horizontal>
-            {albums.map((album) => (
-              <Card key={album.link} style={styles.gridItem}>
-                <Card.Cover
-                  source={{ uri: album.cover_xl }}
-                  style={styles.gridItemCover}
-                />
-                <Card.Content>
-                  <Text variant="titleMedium">{album.title}</Text>
-                  <Text variant="bodyMedium" style={styles.gridSubtitle}>
-                    {album.type}
-                  </Text>
-                </Card.Content>
-              </Card>
-            ))}
-          </ScrollView>
-        </View>
-
-        <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>
             Artistas
           </Text>
           <ScrollView horizontal>
             {artists.map((artist) => (
-              <Card key={artist.link} style={styles.gridItem}>
+              <Card key={artist.id} style={styles.gridItem}>
                 <Card.Cover
-                  source={{ uri: artist.picture_big }}
+                  source={{ uri: artist.cover_photo["640x"] }}
                   style={styles.gridItemCover}
                 />
                 <Card.Content>
@@ -120,9 +98,9 @@ const LibraryScreen: React.FC = () => {
           </Text>
           <ScrollView horizontal>
             {tracks.map((track) => (
-              <Card key={track.link} style={styles.gridItem}>
+              <Card key={track.id} style={styles.gridItem}>
                 <Card.Cover
-                  source={{ uri: track.album.cover_big }}
+                  source={{ uri: track.artwork["480x480"] }}
                   style={styles.gridItemCover}
                 />
                 <Card.Content>
@@ -140,9 +118,9 @@ const LibraryScreen: React.FC = () => {
           <List.Section>
             {tracks.map((track) => (
               <List.Item
-                key={track.link}
+                key={track.id}
                 title={track.title}
-                description={track.album.title}
+                description={track.description}
                 left={() => <List.Icon icon="history" />}
               />
             ))}
