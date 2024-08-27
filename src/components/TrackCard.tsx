@@ -2,25 +2,31 @@ import React from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { Track } from "../interfaces/Track";
 import { IconButton } from "react-native-paper";
-import useTrack, { TrackStatus } from "@/hooks/useTrack";
+import { TrackStatus, usePlayer } from "@/context/PlayerContext";
 
 interface TrackCardProps {
   track: Track;
 }
 
 const TrackCard = ({ track }: TrackCardProps) => {
-  const { sound, status, load, play, pause, unload } = useTrack();
+  const {
+    track: currentTrack,
+    status,
+    loadAndPlayTrack,
+    pauseTrack,
+  } = usePlayer();
 
-  const handleActionButton = async () => {
-    if (!sound) {
-      load(track);
-    }
-    if (status !== TrackStatus.PLAYING) {
-      play();
-    } else if (status === TrackStatus.PLAYING) {
-      pause();
+  const isCurrentTrackPlaying =
+    currentTrack?.id === track.id && status === TrackStatus.PLAYING;
+
+  const handlePress = async () => {
+    if (isCurrentTrackPlaying) {
+      await pauseTrack();
+    } else {
+      await loadAndPlayTrack(track);
     }
   };
+
   return (
     <View style={styles.card}>
       <View>
@@ -28,11 +34,6 @@ const TrackCard = ({ track }: TrackCardProps) => {
           source={{ uri: track.artwork["480x480"] }}
           style={styles.cover}
         />
-        {/* {sound && (
-          <View style={styles.progressIcon}>
-            <CircularProgressIcon />
-          </View>
-        )} */}
       </View>
       <View
         style={{
@@ -53,9 +54,9 @@ const TrackCard = ({ track }: TrackCardProps) => {
           }}
         >
           <IconButton
-            icon={status === TrackStatus.PLAYING ? "pause" : "play"}
+            icon={isCurrentTrackPlaying ? "pause" : "play"}
             size={24}
-            onPress={handleActionButton}
+            onPress={handlePress}
           />
         </View>
       </View>
