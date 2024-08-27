@@ -4,8 +4,15 @@ import { searchTracks } from "../services/audiusService";
 import { Track } from "../interfaces/Track";
 import TrackCard from "../components/TrackCard";
 import { ScrollView } from "react-native-gesture-handler";
+import { TextInput } from "react-native-paper";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { BottomNavigatorStackParams } from "@/navigation/BottomNavigator";
 
 const HomeScreen: React.FC = () => {
+  const navigation =
+    useNavigation<NavigationProp<BottomNavigatorStackParams>>();
+
+  const [query, setQuery] = useState<string>("");
   const [forMeTracks, setForMeTracks] = useState<Track[]>([]);
   const [newTracks, setNewTracks] = useState<Track[]>([]);
   const [popularTracks, setPopularTracks] = useState<Track[]>([]);
@@ -20,8 +27,20 @@ const HomeScreen: React.FC = () => {
 
   const renderItem = ({ item }: { item: Track }) => <TrackCard track={item} />;
 
+  const handleSearch = () => {
+    navigation.navigate("Search", { title: query });
+    setQuery("");
+  };
+
   return (
     <ScrollView style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search for songs..."
+        value={query}
+        onChangeText={setQuery}
+        onSubmitEditing={handleSearch}
+      />
       <View>
         <Text style={styles.titleText}>Para tí</Text>
         <FlatList
@@ -68,6 +87,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  searchInput: {
+    height: 60,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    marginHorizontal: 30,
+    marginVertical: 25,
+    backgroundColor: "#f9f9f9",
   },
   titleText: {
     textAlign: "left",

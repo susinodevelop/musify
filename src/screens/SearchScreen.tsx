@@ -1,13 +1,30 @@
-import React, { useState } from "react";
-import { View, TextInput, Button, FlatList, Text, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, TextInput, FlatList, Text, StyleSheet } from "react-native";
 import { searchTracks } from "../services/audiusService";
 import { Track } from "../interfaces/Track";
 import TrackCard from "../components/TrackCard";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { BottomNavigatorStackParams } from "@/navigation/BottomNavigator";
+
+type SearchScreenRouteProps = RouteProp<BottomNavigatorStackParams, "Search">;
 
 const SearchScreen: React.FC = () => {
+  const route = useRoute<SearchScreenRouteProps>();
+  const { title } = route.params;
   const [query, setQuery] = useState<string>("");
-  const [tracks, setTracks] = useState<any[]>([]); // Cambia el tipo según la respuesta de la API
+  const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (title && title.length > 0) {
+      setQuery(title);
+      setLoading(true);
+      searchTracks(title).then((result) => {
+        setTracks(result);
+        setLoading(false);
+      });
+    }
+  }, [title]);
 
   const handleSearch = async () => {
     if (query.length > 0) {

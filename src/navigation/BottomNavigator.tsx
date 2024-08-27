@@ -12,7 +12,9 @@ type IoniconsName = keyof typeof Ionicons.glyphMap;
 export type BottomNavigatorStackParams = {
   Home: undefined;
   Explore: undefined;
-  Search: undefined;
+  Search: {
+    title?: string;
+  };
   Library: undefined;
   Profile: undefined;
 };
