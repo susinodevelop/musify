@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, View, Text } from "react-native";
+import React from "react";
+import { Image, StyleSheet, View, Text } from "react-native";
 import { Track } from "../interfaces/Track";
-import { Audio } from "expo-av";
 import { IconButton } from "react-native-paper";
-import { getStreameableTrackMp3 } from "@/services/audiusService";
-import { useGlobalStore } from "@/store/globalStore";
 import useTrack, { TrackStatus } from "@/hooks/useTrack";
 
 interface TrackCardProps {
@@ -73,9 +70,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 25,
     overflow: "hidden",
-    elevation: 2, // shadow para Android
+    elevation: 4,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 }, // shadow para iOS
+    shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     height: 400,

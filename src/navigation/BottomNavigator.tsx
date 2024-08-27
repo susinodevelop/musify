@@ -1,15 +1,11 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "@expo/vector-icons/Ionicons"; // Asegúrate de haber importado Ionicons
+import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SearchScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import LibraryScreen from "@/screens/LibraryScreen";
 import ExploreScreen from "@/screens/ExploreScreen";
-import DrawerNavigator from "./DrawerNavigator";
-import { createStackNavigator } from "@react-navigation/stack";
-import StackNavigator from "./StackNavigator";
 
 type IoniconsName = keyof typeof Ionicons.glyphMap;
 
@@ -26,6 +22,8 @@ const BottomNavigator: React.FC = () => {
   return (
     <BottomTab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: true,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: IoniconsName = "home";
 
@@ -53,7 +51,7 @@ const BottomNavigator: React.FC = () => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <BottomTab.Screen name="Home" component={StackNavigator} />
+      <BottomTab.Screen name="Home" component={HomeScreen} />
       <BottomTab.Screen name="Explore" component={ExploreScreen} />
       <BottomTab.Screen name="Search" component={SearchScreen} />
       <BottomTab.Screen name="Library" component={LibraryScreen} />
