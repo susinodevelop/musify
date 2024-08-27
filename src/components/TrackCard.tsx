@@ -1,50 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, View, Text } from "react-native";
 import { Track } from "../interfaces/Track";
 import { Audio } from "expo-av";
-import CircularProgressIcon from "./CircularProgressIcon";
 import { IconButton } from "react-native-paper";
 import { getStreameableTrackMp3 } from "@/services/audiusService";
+import { useGlobalStore } from "@/store/globalStore";
+import useTrack, { TrackStatus } from "@/hooks/useTrack";
 
 interface TrackCardProps {
   track: Track;
 }
 
 const TrackCard = ({ track }: TrackCardProps) => {
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const { sound, status, load, play, pause, unload } = useTrack();
 
   const handleActionButton = async () => {
-    if (sound) {
-      await sound.unloadAsync();
-      setSound(null);
-      setIsPlaying(false);
-      return;
+    if (!sound) {
+      load(track);
     }
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: getStreameableTrackMp3(track.id) },
-      { shouldPlay: true }
-    );
-    setSound(newSound);
-    setIsPlaying(true);
-
-    // Detect when the sound ends to reset the play/pause icon
-    newSound.setOnPlaybackStatusUpdate((status) => {
-      if (status.isLoaded && status.didJustFinish) {
-        setIsPlaying(false);
-        setSound(null);
-      }
-    });
+    if (status !== TrackStatus.PLAYING) {
+      play();
+    } else if (status === TrackStatus.PLAYING) {
+      pause();
+    }
   };
   return (
     <View style={styles.card}>
       <View>
-        <Image source={{ uri: track.artwork["150x150"] }} style={styles.cover} />
-        {sound && (
+        <Image
+          source={{ uri: track.artwork["480x480"] }}
+          style={styles.cover}
+        />
+        {/* {sound && (
           <View style={styles.progressIcon}>
-            <CircularProgressIcon track={sound} />
+            <CircularProgressIcon />
           </View>
-        )}
+        )} */}
       </View>
       <View
         style={{
@@ -53,8 +44,8 @@ const TrackCard = ({ track }: TrackCardProps) => {
         }}
       >
         <View style={styles.info}>
-          <Text style={styles.title}>{track.title}</Text> 
-           <Text style={styles.artist}>{track.user.name}</Text>
+          <Text style={styles.title}>{track.title}</Text>
+          <Text style={styles.artist}>{track.user.name}</Text>
         </View>
         <View
           style={{
@@ -65,7 +56,7 @@ const TrackCard = ({ track }: TrackCardProps) => {
           }}
         >
           <IconButton
-            icon={isPlaying ? "pause" : "play"}
+            icon={status === TrackStatus.PLAYING ? "pause" : "play"}
             size={24}
             onPress={handleActionButton}
           />

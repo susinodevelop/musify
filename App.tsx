@@ -7,8 +7,11 @@ import {
 import * as NavigationBar from "expo-navigation-bar";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Navigator from "./src/navigation/Navigator";
+import BottomNavigator from "./src/navigation/BottomNavigator";
 import { PaperProvider } from "react-native-paper";
+import { NavigationContainer } from "@react-navigation/native";
+import StackNavigator from "@/navigation/StackNavigator";
+import DrawerNavigator from "@/navigation/DrawerNavigator";
 
 export default function App() {
   React.useEffect(() => {
@@ -18,10 +21,12 @@ export default function App() {
 
   return (
     <PaperProvider>
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="light" backgroundColor="black" />
-        <Navigator />
-      </SafeAreaView>
+      <NavigationContainer>
+        <SafeAreaView style={styles.container}>
+          <StatusBar style="light" backgroundColor="black" />
+          <DrawerNavigator />
+        </SafeAreaView>
+      </NavigationContainer>
     </PaperProvider>
   );
 }
