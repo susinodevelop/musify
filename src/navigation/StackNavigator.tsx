@@ -9,7 +9,8 @@ import {
   NavigationProp,
   useNavigation,
 } from "@react-navigation/native";
-import DrawerNavigator, { DrawerNavigatorStackParams } from "./DrawerNavigator";
+import { DrawerNavigatorStackParams } from "./DrawerNavigator";
+import PlayerScreen from "@/screens/PlayerScreen";
 
 const StackTab = createStackNavigator();
 
@@ -29,7 +30,9 @@ const StackNavigator = () => {
         ),
       }}
     >
-      <StackTab.Screen name="HomeScreen" component={HomeScreen} />
+      <StackTab.Screen name="HomeNavigation" component={BottomNavigator} />
+      <StackTab.Screen name="PlayerScreen" component={PlayerScreen} />
+      <StackTab.Screen name="HomeNavigation" component={BottomNavigator} />
     </StackTab.Navigator>
   );
 };
