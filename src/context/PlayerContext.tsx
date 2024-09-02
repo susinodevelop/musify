@@ -13,6 +13,7 @@ export enum TrackStatus {
 interface PlayerContextType {
   track: Track | null;
   status: TrackStatus;
+  progress: number;
   loadAndPlayTrack: (track: Track) => Promise<void>;
   pauseTrack: () => Promise<void>;
 }
@@ -20,6 +21,7 @@ interface PlayerContextType {
 export const PlayerContext = createContext<PlayerContextType>({
   track: null,
   status: TrackStatus.UNLOAD,
+  progress: 0,
   loadAndPlayTrack: async () => {},
   pauseTrack: async () => {},
 });
@@ -30,6 +32,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const [track, setTrack] = useState<Track | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [status, setStatus] = useState<TrackStatus>(TrackStatus.UNLOAD);
+  const [progress, setProgress] = useState<number>(0);
 
   const loadAndPlayTrack = async (newTrack: Track) => {
     if (sound) {
@@ -48,9 +51,13 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setStatus(TrackStatus.PLAYING);
 
     newSound.setOnPlaybackStatusUpdate((playbackStatus) => {
-      if (playbackStatus.isLoaded && playbackStatus.didJustFinish) {
-        setStatus(TrackStatus.UNLOAD);
-        setTrack(null);
+      if (playbackStatus.isLoaded) {
+        setProgress(playbackStatus.durationMillis ? playbackStatus.positionMillis / playbackStatus.durationMillis : 0);
+        if (playbackStatus.didJustFinish) {
+          setStatus(TrackStatus.UNLOAD);
+          setTrack(null);
+          setProgress(0);
+        }
       }
     });
   };
@@ -64,7 +71,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <PlayerContext.Provider
-      value={{ track, status, loadAndPlayTrack, pauseTrack }}
+      value={{ track, status, progress, loadAndPlayTrack, pauseTrack }}
     >
       {children}
     </PlayerContext.Provider>

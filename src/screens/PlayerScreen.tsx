@@ -7,8 +7,8 @@ import { PlayerContext, TrackStatus } from "../context/PlayerContext";
 
 const PlayerScreen: React.FC = () => {
   const [track, setTrack] = useState<Track | null>(null);
-  const [progress, setProgress] = useState(0.5);
-  const { loadAndPlayTrack, pauseTrack, status } = useContext(PlayerContext);
+  const { loadAndPlayTrack, pauseTrack, status, progress } =
+    useContext(PlayerContext);
 
   useEffect(() => {
     searchTracks("h").then((tracks) => setTrack(tracks[0]));
@@ -63,7 +63,7 @@ const PlayerScreen: React.FC = () => {
 
         <ProgressBar
           progress={progress}
-          color="#1DB954"
+          color="#00BFFF"
           style={styles.progressBar}
         />
 
@@ -128,12 +128,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "80%",
-    marginBottom: 20,
   },
+
   progressBar: {
-    width: "80%",
-    height: 4,
-    marginBottom: 20,
+    width: 200,
+    height: 10,
+    borderRadius: 10,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    marginTop: 20,
+    marginBottom: 80,
   },
   interactionButtons: {
     flexDirection: "row",
