@@ -1,6 +1,6 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 import { Track } from "@/interfaces/Track";
-import { Audio } from 'expo-av';
+import { Audio } from "expo-av";
 import { getStreameableTrackMp3 } from "@/services/audiusService";
 
 export enum TrackStatus {
@@ -17,9 +17,16 @@ interface PlayerContextType {
   pauseTrack: () => Promise<void>;
 }
 
-export const PlayerContext = createContext<PlayerContextType | undefined>(undefined);
+export const PlayerContext = createContext<PlayerContextType>({
+  track: null,
+  status: TrackStatus.UNLOAD,
+  loadAndPlayTrack: async () => {},
+  pauseTrack: async () => {},
+});
 
-export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [track, setTrack] = useState<Track | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [status, setStatus] = useState<TrackStatus>(TrackStatus.UNLOAD);
@@ -33,7 +40,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const { sound: newSound } = await Audio.Sound.createAsync({
       uri: await getStreameableTrackMp3(newTrack.id),
     });
-    
+
     setSound(newSound);
     setStatus(TrackStatus.LOADED);
 
@@ -56,7 +63,9 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   return (
-    <PlayerContext.Provider value={{ track, status, loadAndPlayTrack, pauseTrack }}>
+    <PlayerContext.Provider
+      value={{ track, status, loadAndPlayTrack, pauseTrack }}
+    >
       {children}
     </PlayerContext.Provider>
   );
@@ -65,7 +74,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 export const usePlayer = () => {
   const context = useContext(PlayerContext);
   if (!context) {
-    throw new Error('usePlayer must be used within a PlayerProvider');
+    throw new Error("usePlayer must be used within a PlayerProvider");
   }
   return context;
 };

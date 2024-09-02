@@ -1,20 +1,25 @@
 import { Track } from "@/interfaces/Track";
 import { searchTracks } from "@/services/audiusService";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { IconButton, ProgressBar } from "react-native-paper";
+import { PlayerContext, TrackStatus } from "../context/PlayerContext";
 
 const PlayerScreen: React.FC = () => {
-  const [track, setTrack] = useState<Track>(); //TODO revisar, recibir por parametros
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [track, setTrack] = useState<Track | null>(null);
   const [progress, setProgress] = useState(0.5);
+  const { loadAndPlayTrack, pauseTrack, status } = useContext(PlayerContext);
 
   useEffect(() => {
     searchTracks("h").then((tracks) => setTrack(tracks[0]));
   }, []);
 
-  const togglePlayPause = () => {
-    setIsPlaying(!isPlaying);
+  const togglePlayPause = async () => {
+    if (status === TrackStatus.PLAYING) {
+      await pauseTrack();
+    } else if (track) {
+      await loadAndPlayTrack(track);
+    }
   };
 
   return (
@@ -28,8 +33,8 @@ const PlayerScreen: React.FC = () => {
         </View>
 
         <View style={styles.songDetails}>
-          <Text style={styles.songName}>Song Name</Text>
-          <Text style={styles.artistAlbum}>Artist - Album</Text>
+          <Text style={styles.songName}>{track.title}</Text>
+          {/* <Text style={styles.artistAlbum}>{track.artist}</Text> TODO to revisar*/}
         </View>
 
         <View style={styles.playbackControls}>
@@ -44,7 +49,7 @@ const PlayerScreen: React.FC = () => {
             onPress={() => alert("Previous")}
           />
           <IconButton
-            icon={isPlaying ? "pause" : "play"}
+            icon={status === TrackStatus.PLAYING ? "pause" : "play"}
             size={40}
             onPress={togglePlayPause}
           />
