@@ -1,23 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  FlatList,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-import { searchTracks } from "../services/audiusService";
-import { Track } from "../interfaces/Track";
-import TrackCard from "../components/TrackCard";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { BottomNavigatorStackParams } from "@/navigation/BottomNavigator";
+import { View, TextInput, ActivityIndicator, FlatList, StyleSheet } from "react-native";
+import { Track } from "@/interfaces/Track";
+import { searchTracks } from "@/services/audiusService";
+import TrackHorizontalCard from "@/components/TrackHorizontalCard";
 
-type SearchScreenRouteProps = RouteProp<BottomNavigatorStackParams, "Search">;
-
-const SearchScreen: React.FC = () => {
-  const route = useRoute<SearchScreenRouteProps>();
-  const title = route.params?.title;
+const SearchScreen: React.FC<{ title?: string }> = ({ title }) => {
   const [query, setQuery] = useState<string>("");
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,9 +43,13 @@ const SearchScreen: React.FC = () => {
       ) : (
         <FlatList
           data={tracks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <TrackCard track={item} />}
-          style={styles.list}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.cardContainer}>
+              <TrackHorizontalCard track={item} />
+            </View>
+          )}
+          contentContainerStyle={styles.listContent}
         />
       )}
     </View>
@@ -69,50 +60,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
   },
   searchInput: {
     height: 40,
-    borderColor: "#ccc",
+    borderColor: "gray",
     borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     marginBottom: 16,
-    backgroundColor: "#f9f9f9",
   },
-  list: {
-    marginTop: 16,
+  listContent: {
+    alignItems: "center",
   },
-  card: {
-    flexDirection: "row",
+  cardContainer: {
+    width: "100%",
+    alignItems: "center",
     marginBottom: 16,
-    padding: 10,
-    backgroundColor: "#f8f8f8",
-    borderRadius: 10,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cover: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-  },
-  info: {
-    marginLeft: 10,
-    justifyContent: "center",
-  },
-  artist: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 4,
-  },
-  loadingText: {
-    textAlign: "center",
-    fontSize: 16,
-    marginTop: 20,
   },
 });
 
