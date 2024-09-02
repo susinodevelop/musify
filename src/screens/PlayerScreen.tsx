@@ -1,18 +1,21 @@
-import { Track } from "@/interfaces/Track";
-import { searchTracks } from "@/services/audiusService";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { IconButton, ProgressBar } from "react-native-paper";
 import { PlayerContext, TrackStatus } from "../context/PlayerContext";
+import { StackNavigatorStackParams } from "@/navigation/StackNavigator";
+import { RouteProp, useRoute } from "@react-navigation/native";
+
+type PlayerScreenRouteProps = RouteProp<
+  StackNavigatorStackParams,
+  "PlayerScreen"
+>;
 
 const PlayerScreen: React.FC = () => {
-  const [track, setTrack] = useState<Track | null>(null);
+  const route = useRoute<PlayerScreenRouteProps>();
+  const track = route.params?.track;
+
   const { loadAndPlayTrack, pauseTrack, status, progress } =
     useContext(PlayerContext);
-
-  useEffect(() => {
-    searchTracks("h").then((tracks) => setTrack(tracks[0]));
-  }, []);
 
   const togglePlayPause = async () => {
     if (status === TrackStatus.PLAYING) {
