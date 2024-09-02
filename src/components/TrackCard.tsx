@@ -54,14 +54,7 @@ const TrackCard = ({ track }: TrackCardProps) => {
             <Text style={styles.title}>{track.title}</Text>
             <Text style={styles.artist}>{track.user.name}</Text>
           </View>
-          <View
-            style={{
-              flex: 1,
-              alignItems: "flex-end",
-              justifyContent: "center",
-              marginRight: 30,
-            }}
-          >
+          <View style={styles.playButtonContainer}>
             <IconButton
               icon={isCurrentTrackPlaying ? "pause" : "play"}
               size={24}
@@ -96,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   info: {
-    flex: 1,
+    flex: 4,
     flexDirection: "column",
     padding: 10,
   },
@@ -109,13 +102,11 @@ const styles = StyleSheet.create({
     color: "#666",
     marginTop: 4,
   },
-  progressIcon: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: [{ translateX: -50 }, { translateY: -50 }],
-    zIndex: 1000,
-    opacity: 0.7,
+  playButtonContainer: {
+    flex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    marginRight: 20,
   },
 });
 
