@@ -9,7 +9,7 @@ import { User } from "@/interfaces/User";
 const screenWidth = Dimensions.get("window").width;
 
 const ProfileScreen: React.FC = () => {
-  const userId = `${process.env.EXPO_PUBLIC_USER_ID}`;
+  const userId = `${process.env.EXPO_PUBLIC_USER_ID}`; //TODO revisar, recibir por parametros
 
   const [user, setUser] = useState<User>();
 

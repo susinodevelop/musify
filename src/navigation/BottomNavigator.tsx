@@ -20,6 +20,7 @@ export type BottomNavigatorStackParams = {
 };
 
 const BottomTab = createBottomTabNavigator<BottomNavigatorStackParams>();
+
 const BottomNavigator: React.FC = () => {
   return (
     <BottomTab.Navigator
@@ -49,8 +50,6 @@ const BottomNavigator: React.FC = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "tomato",
-        tabBarInactiveTintColor: "gray",
       })}
     >
       <BottomTab.Screen name="Home" component={HomeScreen} />

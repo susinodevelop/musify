@@ -1,14 +1,18 @@
 import React from "react";
-import { Image, StyleSheet, View, Text } from "react-native";
+import { Image, StyleSheet, View, Text, Pressable } from "react-native";
 import { Track } from "../interfaces/Track";
 import { IconButton } from "react-native-paper";
 import { TrackStatus, usePlayer } from "@/context/PlayerContext";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { StackNavigatorStackParams } from "@/navigation/StackNavigator";
 
 interface TrackCardProps {
   track: Track;
 }
 
 const TrackCard = ({ track }: TrackCardProps) => {
+  const navigation = useNavigation<NavigationProp<StackNavigatorStackParams>>();
+
   const {
     track: currentTrack,
     status,
@@ -19,7 +23,7 @@ const TrackCard = ({ track }: TrackCardProps) => {
   const isCurrentTrackPlaying =
     currentTrack?.id === track.id && status === TrackStatus.PLAYING;
 
-  const handlePress = async () => {
+  const handlePressPlay = async () => {
     if (isCurrentTrackPlaying) {
       await pauseTrack();
     } else {
@@ -27,40 +31,46 @@ const TrackCard = ({ track }: TrackCardProps) => {
     }
   };
 
+  const handlePressNavigation = () => {
+    navigation.navigate("PlayerScreen", { track });
+  };
+
   return (
-    <View style={styles.card}>
-      <View>
-        <Image
-          source={{ uri: track.artwork["480x480"] }}
-          style={styles.cover}
-        />
-      </View>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-        }}
-      >
-        <View style={styles.info}>
-          <Text style={styles.title}>{track.title}</Text>
-          <Text style={styles.artist}>{track.user.name}</Text>
+    <Pressable onPress={handlePressNavigation}>
+      <View style={styles.card}>
+        <View>
+          <Image
+            source={{ uri: track.artwork["480x480"] }}
+            style={styles.cover}
+          />
         </View>
         <View
           style={{
             flex: 1,
-            alignItems: "flex-end",
-            justifyContent: "center",
-            marginRight: 30,
+            flexDirection: "row",
           }}
         >
-          <IconButton
-            icon={isCurrentTrackPlaying ? "pause" : "play"}
-            size={24}
-            onPress={handlePress}
-          />
+          <View style={styles.info}>
+            <Text style={styles.title}>{track.title}</Text>
+            <Text style={styles.artist}>{track.user.name}</Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+              justifyContent: "center",
+              marginRight: 30,
+            }}
+          >
+            <IconButton
+              icon={isCurrentTrackPlaying ? "pause" : "play"}
+              size={24}
+              onPress={handlePressPlay}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

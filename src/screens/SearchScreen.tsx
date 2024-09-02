@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, FlatList, Text, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  FlatList,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { searchTracks } from "../services/audiusService";
 import { Track } from "../interfaces/Track";
 import TrackCard from "../components/TrackCard";
@@ -10,13 +17,13 @@ type SearchScreenRouteProps = RouteProp<BottomNavigatorStackParams, "Search">;
 
 const SearchScreen: React.FC = () => {
   const route = useRoute<SearchScreenRouteProps>();
-  const { title } = route.params;
+  const title = route.params?.title;
   const [query, setQuery] = useState<string>("");
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (title && title.length > 0) {
+    if (title !== undefined && title.length > 0) {
       setQuery(title);
       setLoading(true);
       searchTracks(title).then((result) => {
@@ -45,7 +52,7 @@ const SearchScreen: React.FC = () => {
         onSubmitEditing={handleSearch}
       />
       {loading ? (
-        <Text style={styles.loadingText}>Loading...</Text>
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <FlatList
           data={tracks}
@@ -96,10 +103,6 @@ const styles = StyleSheet.create({
   info: {
     marginLeft: 10,
     justifyContent: "center",
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
   },
   artist: {
     fontSize: 14,
