@@ -1,6 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { Track } from "@/interfaces/Track";
-import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from "expo-av";
+import {
+  Audio,
+  AVPlaybackStatus,
+  InterruptionModeAndroid,
+  InterruptionModeIOS,
+} from "expo-av";
 import { getStreameableTrackMp3 } from "@/services/audiusService";
 
 export enum TrackStatus {
@@ -15,6 +20,7 @@ interface PlayerContextType {
   status: TrackStatus;
   progress: number;
   isLooping: boolean;
+  updateProgress: (progress: number) => void;
   loadAndPlayTrack: (track: Track) => Promise<void>;
   pauseTrack: () => Promise<void>;
   changeIsLooping: () => void;
@@ -25,6 +31,7 @@ export const PlayerContext = createContext<PlayerContextType>({
   status: TrackStatus.UNLOAD,
   progress: 0,
   isLooping: false,
+  updateProgress: () => {},
   loadAndPlayTrack: async () => {},
   pauseTrack: async () => {},
   changeIsLooping: () => {},
@@ -35,6 +42,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [track, setTrack] = useState<Track | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [soundStatus, setSoundStatus] = useState<AVPlaybackStatus | null>(null);
   const [status, setStatus] = useState<TrackStatus>(TrackStatus.UNLOAD);
   const [progress, setProgress] = useState<number>(0);
   const [isLooping, setLooping] = useState<boolean>(false);
@@ -115,6 +123,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
               ? status.positionMillis / status.durationMillis
               : 0
           );
+          setSoundStatus(status);
         }
       }, 1000);
     }
@@ -135,9 +144,17 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setLooping(!isLooping);
   };
 
-  useEffect(() => {
-    console.log(isLooping);
-  }, [isLooping]);
+  const updateProgress = (newProgress: number) => {
+    setProgress(newProgress);
+    if (soundStatus?.isLoaded) {
+      const newPositionMillis = soundStatus.durationMillis! * newProgress;
+      setSoundStatus({
+        ...soundStatus,
+        positionMillis: newPositionMillis,
+      });
+      sound?.setPositionAsync(newPositionMillis);
+    }
+  };
 
   return (
     <PlayerContext.Provider
@@ -145,6 +162,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         track,
         status,
         progress,
+        updateProgress,
         loadAndPlayTrack,
         pauseTrack,
         isLooping,

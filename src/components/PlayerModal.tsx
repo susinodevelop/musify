@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, Modal, Pressable } from "react-native";
 import { IconButton, ProgressBar } from "react-native-paper";
 import { PlayerContext, TrackStatus } from "../context/PlayerContext";
 import { Track } from "@/interfaces/Track";
+import DraggableProgressBar from "./DraggableProgressBar";
 
 interface PlayerModalProps {
   track: Track;
@@ -20,6 +21,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
     pauseTrack,
     status,
     progress,
+    updateProgress,
     isLooping,
     changeIsLooping,
   } = useContext(PlayerContext);
@@ -79,9 +81,10 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
             />
           </View>
 
-          <ProgressBar
+          <DraggableProgressBar
             progress={progress}
-            color="#00BFFF"
+            setProgress={updateProgress}
+            color="#00BFFF" //TODO revisar
             style={styles.progressBar}
           />
 
