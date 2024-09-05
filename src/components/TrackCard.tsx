@@ -1,27 +1,29 @@
-import React from "react";
-import { Image, StyleSheet, View, Text, Pressable } from "react-native";
-import { Track } from "../interfaces/Track";
+import React, { useState, useContext } from "react";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { IconButton } from "react-native-paper";
-import { TrackStatus, usePlayer } from "@/context/PlayerContext";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { StackNavigatorStackParams } from "@/navigation/StackNavigator";
+import PlayerModal from "./PlayerModal";
+import { PlayerContext, TrackStatus } from "../context/PlayerContext";
+import { Track } from "@/interfaces/Track";
 
 interface TrackCardProps {
   track: Track;
 }
 
-const TrackCard = ({ track }: TrackCardProps) => {
-  const navigation = useNavigation<NavigationProp<StackNavigatorStackParams>>();
-
+const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
   const {
-    track: currentTrack,
-    status,
     loadAndPlayTrack,
     pauseTrack,
-  } = usePlayer();
+    status,
+    track: currentTrack,
+  } = useContext(PlayerContext);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const isCurrentTrackPlaying =
     currentTrack?.id === track.id && status === TrackStatus.PLAYING;
+
+  const handlePressNavigation = () => {
+    setModalVisible(true);
+  };
 
   const handlePressPlay = async () => {
     if (isCurrentTrackPlaying) {
@@ -31,39 +33,42 @@ const TrackCard = ({ track }: TrackCardProps) => {
     }
   };
 
-  const handlePressNavigation = () => {
-    navigation.navigate("PlayerScreen", { track });
-  };
-
   return (
-    <Pressable onPress={handlePressNavigation}>
-      <View style={styles.card}>
-        <View>
-          <Image
-            source={{ uri: track.artwork["480x480"] }}
-            style={styles.cover}
-          />
-        </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-          }}
-        >
-          <View style={styles.info}>
-            <Text style={styles.title}>{track.title}</Text>
-            <Text style={styles.artist}>{track.user.name}</Text>
-          </View>
-          <View style={styles.playButtonContainer}>
-            <IconButton
-              icon={isCurrentTrackPlaying ? "pause" : "play"}
-              size={24}
-              onPress={handlePressPlay}
+    <>
+      <Pressable onPress={handlePressNavigation}>
+        <View style={styles.card}>
+          <View>
+            <Image
+              source={{ uri: track.artwork["480x480"] }}
+              style={styles.cover}
             />
           </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+            }}
+          >
+            <View style={styles.info}>
+              <Text style={styles.title}>{track.title}</Text>
+              <Text style={styles.artist}>{track.user.name}</Text>
+            </View>
+            <View style={styles.playButtonContainer}>
+              <IconButton
+                icon={isCurrentTrackPlaying ? "pause" : "play"}
+                size={24}
+                onPress={handlePressPlay}
+              />
+            </View>
+          </View>
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+      <PlayerModal
+        track={track}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+    </>
   );
 };
 

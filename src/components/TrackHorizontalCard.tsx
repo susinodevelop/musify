@@ -1,34 +1,39 @@
 import { Track } from "@/interfaces/Track";
-import { StackNavigatorStackParams } from "@/navigation/StackNavigator";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import PlayerModal from "./PlayerModal";
 
 interface TrackHorizontalCardProps {
   track: Track;
 }
 
 const TrackHorizontalCard: React.FC<TrackHorizontalCardProps> = ({ track }) => {
-  const navigation = useNavigation<NavigationProp<StackNavigatorStackParams>>();
-
+  const [modalVisible, setModalVisible] = useState(false);
   const handleNavigationPress = () => {
-    navigation.navigate("PlayerScreen", { track });
+    setModalVisible(true);
   };
 
   return (
-    <Pressable onPress={handleNavigationPress}>
-      <View style={styles.container}>
-        <Image
-          source={{ uri: track.artwork["150x150"] }}
-          style={styles.image}
-        />
-        <View style={styles.details}>
-          <Text style={styles.title}>{track.title}</Text>
-          <Text style={styles.description}>{track.description}</Text>
-          <Text style={styles.duration}>{track.duration}</Text>
+    <>
+      <Pressable onPress={handleNavigationPress}>
+        <View style={styles.container}>
+          <Image
+            source={{ uri: track.artwork["150x150"] }}
+            style={styles.image}
+          />
+          <View style={styles.details}>
+            <Text style={styles.title}>{track.title}</Text>
+            <Text style={styles.description}>{track.description}</Text>
+            <Text style={styles.duration}>{track.duration}</Text>
+          </View>
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+      <PlayerModal
+        track={track}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+    </>
   );
 };
 
