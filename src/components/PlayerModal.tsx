@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet, Modal, Pressable } from "react-native";
 import { IconButton, ProgressBar } from "react-native-paper";
 import { PlayerContext, TrackStatus } from "../context/PlayerContext";
@@ -23,12 +23,6 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
     isLooping,
     changeIsLooping,
   } = useContext(PlayerContext);
-
-  const [currentProgress, setCurrentProgress] = useState(progress);
-
-  useEffect(() => {
-    setCurrentProgress(progress);
-  }, [progress]);
 
   const togglePlayPause = async () => {
     if (status === TrackStatus.PLAYING) {
@@ -86,7 +80,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
           </View>
 
           <ProgressBar
-            progress={currentProgress}
+            progress={progress}
             color="#00BFFF"
             style={styles.progressBar}
           />
