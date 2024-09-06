@@ -72,36 +72,12 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
       {
         shouldPlay: true,
         rate: 1.0,
-        isLooping: isLooping, //TODO modificar desde boton de loop
+        isLooping: isLooping,
         progressUpdateIntervalMillis: 100,
         shouldCorrectPitch: true,
-        positionMillis: 0, //TODO modificar para el resume
+        positionMillis: 0,
       },
-      (playbackStatus) => {
-        //TODO revisar funcion
-        if (!playbackStatus.isLoaded) {
-          //TODO unloaded status
-          if (playbackStatus.error) {
-            console.error(playbackStatus.error);
-          }
-        } else {
-          if (playbackStatus.isPlaying) {
-            // console.log("playing");
-          } else {
-            // console.log("paused");
-          }
-          if (playbackStatus.isBuffering) {
-            // console.log("buffering");
-          }
-          if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
-            // console.log("finished");
-            setStatus(TrackStatus.UNLOAD);
-            setTrack(null);
-            setProgress(0);
-          }
-        }
-      },
-      false
+      handlePlaybackStatusUpdate
     );
 
     setSound(newSound);
@@ -111,10 +87,24 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setStatus(TrackStatus.PLAYING);
   };
 
-  useEffect(() => {
-    let interval = null;
+  const handlePlaybackStatusUpdate = (playbackStatus: AVPlaybackStatus) => {
+    if (!playbackStatus.isLoaded) {
+      if (playbackStatus.error) {
+        console.error(playbackStatus.error);
+      }
+    } else {
+      if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
+        setStatus(TrackStatus.UNLOAD);
+        setTrack(null);
+        setProgress(0);
+      }
+    }
+  };
 
-    if (TrackStatus.PLAYING === status && sound) {
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (status === TrackStatus.PLAYING && sound) {
       interval = setInterval(async () => {
         const status = await sound.getStatusAsync();
         if (status.isLoaded && status.isPlaying) {
@@ -162,10 +152,10 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         track,
         status,
         progress,
+        isLooping,
         updateProgress,
         loadAndPlayTrack,
         pauseTrack,
-        isLooping,
         changeIsLooping,
       }}
     >
