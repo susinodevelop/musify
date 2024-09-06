@@ -29,30 +29,20 @@ const DraggableProgressBar = gestureHandlerRootHOC(
     const pan = Gesture.Pan()
       .enabled(true)
       .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
-        const touchX = Math.max(0, Math.min(event.translationX, width));
+        const touchX = Math.max(0, Math.min(event.x, width));
         thisX.value = touchX / width;
-        console.log("Update", thisX.value);
         runOnJS(setProgress)(thisX.value);
       })
       .onEnd(() => {
-        console.log("End", thisX.value);
         runOnJS(setProgress)(thisX.value);
       });
 
     return (
-      <View>
+      <View onLayout={onLayout} style={styles.container}>
         <GestureDetector gesture={pan}>
-          <View
-            onLayout={onLayout}
-            style={{
-              height: 50,
-              backgroundColor: "blue",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
+          <View style={styles.progressBarContainer}>
             <ProgressBar
-              progress={progress}
+              progress={thisX.value}
               color={color}
               style={styles.progressBar}
             />
@@ -63,7 +53,19 @@ const DraggableProgressBar = gestureHandlerRootHOC(
   }
 );
 
+// TODO revisar
 const styles = StyleSheet.create({
+  container: {
+    height: 50,
+    backgroundColor: "blue",
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  progressBarContainer: {
+    height: "100%",
+    justifyContent: "center",
+    alignContent: "center",
+  },
   progressBar: {
     width: 200,
     height: 10,
