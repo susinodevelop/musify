@@ -81,12 +81,13 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
             />
           </View>
 
-          <DraggableProgressBar
-            progress={progress}
-            setProgress={updateProgress}
-            color="#00BFFF" //TODO revisar
-            style={styles.progressBar}
-          />
+          <View style={{ height: 50 }}>
+            <DraggableProgressBar
+              progress={progress}
+              setProgress={updateProgress}
+              color="#00BFFF" //TODO revisar
+            />
+          </View>
 
           <View style={styles.interactionButtons}>
             <IconButton
@@ -165,18 +166,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
     marginBottom: 20,
-  },
-  progressBar: {
-    width: 200,
-    height: 10,
-    borderRadius: 10,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    marginTop: 20,
-    marginBottom: 80,
   },
   interactionButtons: {
     flexDirection: "row",

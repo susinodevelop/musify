@@ -104,7 +104,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
 
-    if (status === TrackStatus.PLAYING && sound) {
+    if (sound) {
       interval = setInterval(async () => {
         const status = await sound.getStatusAsync();
         if (status.isLoaded && status.isPlaying) {
@@ -135,14 +135,18 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateProgress = (newProgress: number) => {
-    setProgress(newProgress);
+    // console.log("updateProgress", newProgress);//TODO eliminar
     if (soundStatus?.isLoaded) {
       const newPositionMillis = soundStatus.durationMillis! * newProgress;
       setSoundStatus({
         ...soundStatus,
         positionMillis: newPositionMillis,
       });
-      sound?.setPositionAsync(newPositionMillis);
+      sound?.setPositionAsync(newPositionMillis).catch((error) => {
+        console.error("Error setting position:", error);
+      });
+
+      setProgress(newProgress);
     }
   };
 

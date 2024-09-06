@@ -1,57 +1,79 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import { StyleSheet, LayoutChangeEvent, View } from "react-native";
 import {
-  View,
-  StyleSheet,
-  PanResponder,
-  Dimensions,
-  StyleProp,
-  ViewStyle,
-} from "react-native";
+  Gesture,
+  GestureDetector,
+  gestureHandlerRootHOC,
+  GestureUpdateEvent,
+  PanGestureHandlerEventPayload,
+} from "react-native-gesture-handler";
 import { ProgressBar } from "react-native-paper";
-
-const SCREEN_WIDTH = Dimensions.get("window").width; // Obtener el ancho de la pantalla
+import { runOnJS, useSharedValue } from "react-native-reanimated";
 
 interface DraggableProgressBarProps {
   progress: number;
   setProgress: (progress: number) => void;
   color?: string;
-  style?: StyleProp<ViewStyle>;
 }
-//TODO revisar toda la clase
-const DraggableProgressBar = ({
-  progress,
-  setProgress,
-  color = "red",
-  style,
-}: DraggableProgressBarProps) => {
-  const progressRef = useRef(0); // Usar ref para almacenar el valor actual del progreso
 
-  // PanResponder para manejar el gesto de arrastre
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true, // Permitir que el gesto comience
-      onPanResponderMove: (evt, gestureState) => {
-        // Calcular el nuevo progreso en función de la posición del toque
-        const touchX = gestureState.moveX; // Coordenada X donde el usuario toca
-        let newProgress = touchX / SCREEN_WIDTH; // Convertir la posición a un valor de 0 a 1
-        newProgress = Math.max(0, Math.min(newProgress, 1)); // Asegurar que el valor esté entre 0 y 1
-        setProgress(newProgress); // Actualizar el progreso
-        progressRef.current = newProgress; // Actualizar el valor de la referencia
-      },
-      onPanResponderRelease: () => {
-        // Puedes hacer algo aquí cuando el usuario suelta el arrastre (por ejemplo, actualizar un reproductor de audio)
-        console.log("Progreso final:", progressRef.current);
-      },
-    })
-  ).current;
+const DraggableProgressBar = gestureHandlerRootHOC(
+  ({ progress, setProgress, color = "red" }: DraggableProgressBarProps) => {
+    const thisX = useSharedValue(progress);
+    const [width, setWidth] = useState(0);
 
-  return (
-    <View
-      {...panResponder.panHandlers} // Asignar el PanResponder a la vista de la barra de progreso
-    >
-      <ProgressBar progress={progress} color={color} style={style} />
-    </View>
-  );
-};
+    const onLayout = (event: LayoutChangeEvent) => {
+      const { width } = event.nativeEvent.layout;
+      setWidth(width);
+    };
+
+    const pan = Gesture.Pan()
+      .enabled(true)
+      .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
+        const touchX = Math.max(0, Math.min(event.translationX, width));
+        thisX.value = touchX / width;
+        console.log("Update", thisX.value);
+        runOnJS(setProgress)(thisX.value);
+      })
+      .onEnd(() => {
+        console.log("End", thisX.value);
+        runOnJS(setProgress)(thisX.value);
+      });
+
+    return (
+      <View>
+        <GestureDetector gesture={pan}>
+          <View
+            onLayout={onLayout}
+            style={{
+              height: 50,
+              backgroundColor: "blue",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <ProgressBar
+              progress={progress}
+              color={color}
+              style={styles.progressBar}
+            />
+          </View>
+        </GestureDetector>
+      </View>
+    );
+  }
+);
+
+const styles = StyleSheet.create({
+  progressBar: {
+    width: 200,
+    height: 10,
+    borderRadius: 10,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+});
 
 export default DraggableProgressBar;
