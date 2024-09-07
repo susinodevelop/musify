@@ -7,8 +7,11 @@ import {
   GestureUpdateEvent,
   PanGestureHandlerEventPayload,
 } from "react-native-gesture-handler";
-import { ProgressBar } from "react-native-paper";
-import { runOnJS, useSharedValue } from "react-native-reanimated";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 interface DraggableProgressBarProps {
   progress: number;
@@ -37,14 +40,22 @@ const DraggableProgressBar = gestureHandlerRootHOC(
         runOnJS(setProgress)(thisX.value);
       });
 
+    const animatedStyle = useAnimatedStyle(() => {
+      return {
+        width: `${thisX.value * 100}%`,
+      };
+    });
+
     return (
-      <View onLayout={onLayout} style={styles.container}>
+      <View style={styles.container}>
         <GestureDetector gesture={pan}>
-          <View style={styles.progressBarContainer}>
-            <ProgressBar
-              progress={thisX.value}
-              color={color}
-              style={styles.progressBar}
+          <View style={styles.progressBarBackground} onLayout={onLayout}>
+            <Animated.View
+              style={[
+                styles.progressBarFill,
+                animatedStyle,
+                { backgroundColor: color  },
+              ]}
             />
           </View>
         </GestureDetector>
@@ -53,28 +64,20 @@ const DraggableProgressBar = gestureHandlerRootHOC(
   }
 );
 
-// TODO revisar
 const styles = StyleSheet.create({
   container: {
-    height: 50,
-    backgroundColor: "blue",
-    justifyContent: "center",
-    alignContent: "center",
+    padding: 20,
   },
-  progressBarContainer: {
-    height: "100%",
-    justifyContent: "center",
-    alignContent: "center",
-  },
-  progressBar: {
-    width: 200,
+  progressBarBackground: {
+    width: 300,
     height: 10,
-    borderRadius: 10,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    backgroundColor: "#ddd",
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  progressBarFill: {
+    height: "100%",
+    borderRadius: 5,
   },
 });
 
