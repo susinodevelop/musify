@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet, Modal, Pressable } from "react-native";
-import { IconButton, ProgressBar } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import { PlayerContext, TrackStatus } from "../context/PlayerContext";
 import { Track } from "@/interfaces/Track";
 import DraggableProgressBar from "./DraggableProgressBar";
