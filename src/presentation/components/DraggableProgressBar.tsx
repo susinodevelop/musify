@@ -1,5 +1,11 @@
+import { container } from "inversify/inversify.config";
 import React, { useState } from "react";
-import { StyleSheet, LayoutChangeEvent, View } from "react-native";
+import {
+  StyleSheet,
+  LayoutChangeEvent,
+  View,
+  DimensionValue,
+} from "react-native";
 import {
   Gesture,
   GestureDetector,
@@ -14,13 +20,19 @@ import Animated, {
 } from "react-native-reanimated";
 
 interface DraggableProgressBarProps {
+  width: DimensionValue;
   progress: number;
   setProgress: (progress: number) => void;
   color?: string;
 }
 
 const DraggableProgressBar = gestureHandlerRootHOC(
-  ({ progress, setProgress, color = "red" }: DraggableProgressBarProps) => {
+  ({
+    width: originalWidth,
+    progress,
+    setProgress,
+    color = "red",
+  }: DraggableProgressBarProps) => {
     const thisX = useSharedValue(progress);
     const [width, setWidth] = useState(0);
 
@@ -47,14 +59,14 @@ const DraggableProgressBar = gestureHandlerRootHOC(
     });
 
     return (
-      <View style={styles.container}>
+      <View style={{ ...styles.container, width: originalWidth }}>
         <GestureDetector gesture={pan}>
           <View style={styles.progressBarBackground} onLayout={onLayout}>
             <Animated.View
               style={[
                 styles.progressBarFill,
                 animatedStyle,
-                { backgroundColor: color  },
+                { backgroundColor: color },
               ]}
             />
           </View>
@@ -66,10 +78,11 @@ const DraggableProgressBar = gestureHandlerRootHOC(
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   progressBarBackground: {
-    width: 300,
+    width: "100%",
     height: 10,
     backgroundColor: "#ddd",
     borderRadius: 5,

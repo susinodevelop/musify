@@ -42,10 +42,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
             <IconButton icon="close-circle" size={24} iconColor="black" />
           </Pressable>
           <View style={styles.albumArtworkContainer}>
-            <Image
-              source={{ uri: track.cover }}
-              style={styles.albumArtwork}
-            />
+            <Image source={{ uri: track.cover }} style={styles.albumArtwork} />
           </View>
 
           <View style={styles.songDetails}>
@@ -83,6 +80,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
 
           <View style={{ height: 50 }}>
             <DraggableProgressBar
+              width={300}
               progress={progress}
               setProgress={updateProgress}
               color="#00BFFF" //TODO revisar
