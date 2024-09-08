@@ -11,6 +11,7 @@ import TrackEntity from "@/domain/entities/TrackEntity";
 import { useRepositories } from "../context/AppContext";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { BottomNavigatorStackParams } from "../navigation/BottomNavigator";
+import ScreenWithPlayer from "../components/ScreenWithPlayer";
 
 type SearchScreenRouteProps = RouteProp<BottomNavigatorStackParams, "Search">;
 
@@ -19,7 +20,7 @@ const SearchScreen: React.FC = () => {
 
   const route = useRoute<SearchScreenRouteProps>();
 
-  const title = route.params.title;
+  const title = route.params?.title ;
 
   const [query, setQuery] = useState<string>("");
   const [tracks, setTracks] = useState<TrackEntity[]>([]);
@@ -46,29 +47,31 @@ const SearchScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search for songs..."
-        value={query}
-        onChangeText={setQuery}
-        onSubmitEditing={handleSearch}
-      />
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={tracks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.cardContainer}>
-              <TrackHorizontalCard track={item} />
-            </View>
-          )}
-          contentContainerStyle={styles.listContent}
+    <ScreenWithPlayer>
+      <View style={styles.container}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search for songs..."
+          value={query}
+          onChangeText={setQuery}
+          onSubmitEditing={handleSearch}
         />
-      )}
-    </View>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <FlatList
+            data={tracks}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.cardContainer}>
+                <TrackHorizontalCard track={item} />
+              </View>
+            )}
+            contentContainerStyle={styles.listContent}
+          />
+        )}
+      </View>
+    </ScreenWithPlayer>
   );
 };
 

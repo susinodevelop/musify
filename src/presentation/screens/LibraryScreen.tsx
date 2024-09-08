@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, Image } from "react-native";
 import { Appbar, Button, Card, Text, List } from "react-native-paper";
 import { useRepositories } from "../context/AppContext";
+import ScreenWithPlayer from "../components/ScreenWithPlayer";
 
 const LibraryScreen: React.FC = () => {
   const { trackRepository, playlistRepository, artistRepository } =
@@ -20,112 +21,119 @@ const LibraryScreen: React.FC = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.mainContent}>
-        <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>
-            Playlists
-          </Text>
-          <Button mode="contained" onPress={() => {}} style={styles.addButton}>
-            Añadir Nueva Playlist
-          </Button>
-          <ScrollView horizontal>
-            {playlists.map((playlist) => (
-              <Card key={playlist.id} style={styles.gridItem}>
-                <Card.Cover
-                  source={{ uri: playlist.cover }}
-                  style={styles.gridItemCover}
-                />
-                <Card.Content>
-                  <Text variant="titleMedium">{playlist.title}</Text>
-                  <Text variant="bodyMedium" style={styles.gridSubtitle}>
-                    {playlist.totalTracks} - Canciones
-                  </Text>
-                </Card.Content>
-              </Card>
-            ))}
-          </ScrollView>
-        </View>
-
-        <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>
-            Canciones Favoritas
-          </Text>
-
-          <List.Section>
-            {tracks.map((track) => (
-              <List.Item
-                key={track.id}
-                title={track.title}
-                description={`${track.artist.name} - ${track.genre}`}
-                left={() => (
-                  <Image
-                    source={{ uri: track.cover }}
-                    width={50}
-                    height={50}
-                    borderRadius={5}
+    <ScreenWithPlayer>
+      {" "}
+      <View style={styles.container}>
+        <ScrollView style={styles.mainContent}>
+          <View style={styles.section}>
+            <Text variant="titleLarge" style={styles.sectionTitle}>
+              Playlists
+            </Text>
+            <Button
+              mode="contained"
+              onPress={() => {}}
+              style={styles.addButton}
+            >
+              Añadir Nueva Playlist
+            </Button>
+            <ScrollView horizontal>
+              {playlists.map((playlist) => (
+                <Card key={playlist.id} style={styles.gridItem}>
+                  <Card.Cover
+                    source={{ uri: playlist.cover }}
+                    style={styles.gridItemCover}
                   />
-                )}
-              />
-            ))}
-          </List.Section>
-        </View>
+                  <Card.Content>
+                    <Text variant="titleMedium">{playlist.title}</Text>
+                    <Text variant="bodyMedium" style={styles.gridSubtitle}>
+                      {playlist.totalTracks} - Canciones
+                    </Text>
+                  </Card.Content>
+                </Card>
+              ))}
+            </ScrollView>
+          </View>
 
-        <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>
-            Artistas
-          </Text>
-          <ScrollView horizontal>
-            {artists.map((artist) => (
-              <Card key={artist.id} style={styles.gridItem}>
-                <Card.Cover
-                  source={{ uri: artist.cover }}
-                  style={styles.gridItemCover}
+          <View style={styles.section}>
+            <Text variant="titleLarge" style={styles.sectionTitle}>
+              Canciones Favoritas
+            </Text>
+
+            <List.Section>
+              {tracks.map((track) => (
+                <List.Item
+                  key={track.id}
+                  title={track.title}
+                  description={`${track.artist.name} - ${track.genre}`}
+                  left={() => (
+                    <Image
+                      source={{ uri: track.cover }}
+                      width={50}
+                      height={50}
+                      borderRadius={5}
+                    />
+                  )}
                 />
-                <Card.Content>
-                  <Text variant="titleMedium">{artist.name}</Text>
-                </Card.Content>
-              </Card>
-            ))}
-          </ScrollView>
-        </View>
+              ))}
+            </List.Section>
+          </View>
 
-        <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>
-            Descargas
-          </Text>
-          <ScrollView horizontal>
-            {tracks.map((track) => (
-              <Card key={track.id} style={styles.gridItem}>
-                <Card.Cover
-                  source={{ uri: track.cover }}
-                  style={styles.gridItemCover}
+          <View style={styles.section}>
+            <Text variant="titleLarge" style={styles.sectionTitle}>
+              Artistas
+            </Text>
+            <ScrollView horizontal>
+              {artists.map((artist) => (
+                <Card key={artist.id} style={styles.gridItem}>
+                  <Card.Cover
+                    source={{ uri: artist.cover }}
+                    style={styles.gridItemCover}
+                  />
+                  <Card.Content>
+                    <Text variant="titleMedium">{artist.name}</Text>
+                  </Card.Content>
+                </Card>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.section}>
+            <Text variant="titleLarge" style={styles.sectionTitle}>
+              Descargas
+            </Text>
+            <ScrollView horizontal>
+              {tracks.map((track) => (
+                <Card key={track.id} style={styles.gridItem}>
+                  <Card.Cover
+                    source={{ uri: track.cover }}
+                    style={styles.gridItemCover}
+                  />
+                  <Card.Content>
+                    <Text variant="titleMedium">{track.title}</Text>
+                  </Card.Content>
+                </Card>
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.section}>
+            <Text variant="titleLarge" style={styles.sectionTitle}>
+              Historial
+            </Text>
+            <List.Section>
+              {tracks.map((track) => (
+                <List.Item
+                  key={track.id}
+                  title={track.title}
+                  description={track.description}
+                  left={() => <List.Icon icon="history" />}
                 />
-                <Card.Content>
-                  <Text variant="titleMedium">{track.title}</Text>
-                </Card.Content>
-              </Card>
-            ))}
-          </ScrollView>
-        </View>
-
-        <View style={styles.section}>
-          <Text variant="titleLarge" style={styles.sectionTitle}>
-            Historial
-          </Text>
-          <List.Section>
-            {tracks.map((track) => (
-              <List.Item
-                key={track.id}
-                title={track.title}
-                description={track.description}
-                left={() => <List.Icon icon="history" />}
-              />
-            ))}
-          </List.Section>
-        </View>
-      </ScrollView>
-    </View>
+              ))}
+            </List.Section>
+          </View>
+        </ScrollView>
+      </View>
+    </ScreenWithPlayer>
   );
 };
 

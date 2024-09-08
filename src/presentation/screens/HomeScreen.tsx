@@ -7,6 +7,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { BottomNavigatorStackParams } from "@/presentation/navigation/BottomNavigator";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { useRepositories } from "../context/AppContext";
+import ScreenWithPlayer from "../components/ScreenWithPlayer";
 
 const HomeScreen: React.FC = () => {
   const { trackRepository } = useRepositories();
@@ -19,11 +20,12 @@ const HomeScreen: React.FC = () => {
   const [popularTracks, setPopularTracks] = useState<TrackEntity[]>([]);
   const [recentTracks, setRecentTracks] = useState<TrackEntity[]>([]);
 
+  //TODO revisar algoritmo de carga de canciones
   useEffect(() => {
-    trackRepository.search("hardstyle").then(setForMeTracks);
-    trackRepository.search("rock").then(setNewTracks);
-    trackRepository.search("fito y fitipaldis").then(setPopularTracks);
-    trackRepository.search("adele").then(setRecentTracks);
+    trackRepository.getRandom("hardstyle", 5).then(setForMeTracks);
+    trackRepository.getRandom("rock", 5).then(setNewTracks);
+    trackRepository.getRandom("fito y fitipaldis", 5).then(setPopularTracks);
+    trackRepository.getRandom("adele", 5).then(setRecentTracks);
   }, []);
 
   const renderItem = ({ item }: { item: TrackEntity }) => (
@@ -36,51 +38,53 @@ const HomeScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search for songs..."
-        value={query}
-        onChangeText={setQuery}
-        onSubmitEditing={handleSearch}
-      />
-      <View>
-        <Text style={styles.titleText}>Para tí</Text>
-        <FlatList
-          horizontal
-          data={forMeTracks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
+    <ScreenWithPlayer>
+      <ScrollView style={styles.container}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search for songs..."
+          value={query}
+          onChangeText={setQuery}
+          onSubmitEditing={handleSearch}
         />
-      </View>
-      <View>
-        <Text style={styles.titleText}>Nuevo</Text>
-        <FlatList
-          horizontal
-          data={newTracks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-        />
-      </View>
-      <View>
-        <Text style={styles.titleText}>Popular</Text>
-        <FlatList
-          horizontal
-          data={popularTracks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-        />
-      </View>
-      <View>
-        <Text style={styles.titleText}>Reciente</Text>
-        <FlatList
-          horizontal
-          data={recentTracks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-        />
-      </View>
-    </ScrollView>
+        <View>
+          <Text style={styles.titleText}>Para tí</Text>
+          <FlatList
+            horizontal
+            data={forMeTracks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderItem}
+          />
+        </View>
+        <View>
+          <Text style={styles.titleText}>Nuevo</Text>
+          <FlatList
+            horizontal
+            data={newTracks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderItem}
+          />
+        </View>
+        <View>
+          <Text style={styles.titleText}>Popular</Text>
+          <FlatList
+            horizontal
+            data={popularTracks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderItem}
+          />
+        </View>
+        <View>
+          <Text style={styles.titleText}>Reciente</Text>
+          <FlatList
+            horizontal
+            data={recentTracks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderItem}
+          />
+        </View>
+      </ScrollView>
+    </ScreenWithPlayer>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import { IconButton, List, Avatar, Divider } from "react-native-paper";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { List, Avatar, Divider, ActivityIndicator } from "react-native-paper";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import UserEntity from "@/domain/entities/UserEntity";
@@ -18,105 +18,107 @@ const ProfileScreen: React.FC = () => {
     userRepository.getById(userId).then(setUser);
   }, []);
 
-  return (
-    user && (
-      <ScrollView style={styles.container}>
-        {/* User Information */}
-        <View style={styles.userInfo}>
-          <Avatar.Image
-            size={100}
-            source={{ uri: user.profilePicture }} // Reemplaza con la URL de la imagen de perfil
+  return user ? (
+    <ScrollView style={styles.container}>
+      {/* User Information */}
+      <View style={styles.userInfo}>
+        <Avatar.Image
+          size={100}
+          source={{ uri: user.profilePicture }} // Reemplaza con la URL de la imagen de perfil
+        />
+        <Text style={styles.username}>John Doe</Text>
+      </View>
+
+      <Divider style={styles.divider} />
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Public Playlists</Text>
+        <List.Section>
+          <List.Item
+            title="My Favorite Tracks"
+            description="Public Playlist"
+            left={(props) => <List.Icon {...props} icon="playlist-music" />}
           />
-          <Text style={styles.username}>John Doe</Text>
-        </View>
+          <List.Item
+            title="Chill Vibes"
+            description="Public Playlist"
+            left={(props) => <List.Icon {...props} icon="playlist-music" />}
+          />
+          <List.Item
+            title="Top Hits"
+            description="Public Playlist"
+            left={(props) => <List.Icon {...props} icon="playlist-music" />}
+          />
+        </List.Section>
+      </View>
 
-        <Divider style={styles.divider} />
+      <Divider style={styles.divider} />
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Public Playlists</Text>
-          <List.Section>
-            <List.Item
-              title="My Favorite Tracks"
-              description="Public Playlist"
-              left={(props) => <List.Icon {...props} icon="playlist-music" />}
-            />
-            <List.Item
-              title="Chill Vibes"
-              description="Public Playlist"
-              left={(props) => <List.Icon {...props} icon="playlist-music" />}
-            />
-            <List.Item
-              title="Top Hits"
-              description="Public Playlist"
-              left={(props) => <List.Icon {...props} icon="playlist-music" />}
-            />
-          </List.Section>
-        </View>
-
-        <Divider style={styles.divider} />
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Listening Stats</Text>
-          <LineChart
-            data={{
-              labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-              datasets: [
-                {
-                  data: [20, 45, 28, 80, 99, 43],
-                },
-              ],
-            }}
-            width={screenWidth - 40}
-            height={220}
-            yAxisLabel=""
-            chartConfig={{
-              backgroundColor: "#1e2923",
-              backgroundGradientFrom: "#08130d",
-              backgroundGradientTo: "#08130d",
-              decimalPlaces: 2,
-              color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Listening Stats</Text>
+        <LineChart
+          data={{
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            datasets: [
+              {
+                data: [20, 45, 28, 80, 99, 43],
               },
-              propsForDots: {
-                r: "6",
-                strokeWidth: "2",
-                stroke: "#ffa726",
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
+            ],
+          }}
+          width={screenWidth - 40}
+          height={220}
+          yAxisLabel=""
+          chartConfig={{
+            backgroundColor: "#1e2923",
+            backgroundGradientFrom: "#08130d",
+            backgroundGradientTo: "#08130d",
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            style: {
               borderRadius: 16,
-            }}
+            },
+            propsForDots: {
+              r: "6",
+              strokeWidth: "2",
+              stroke: "#ffa726",
+            },
+          }}
+          bezier
+          style={{
+            marginVertical: 8,
+            borderRadius: 16,
+          }}
+        />
+      </View>
+
+      <Divider style={styles.divider} />
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Account Settings</Text>
+        <List.Section>
+          <List.Item
+            title="Change Password"
+            left={(props) => <List.Icon {...props} icon="lock" />}
+            onPress={() => console.log("Change Password")}
           />
-        </View>
-
-        <Divider style={styles.divider} />
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account Settings</Text>
-          <List.Section>
-            <List.Item
-              title="Change Password"
-              left={(props) => <List.Icon {...props} icon="lock" />}
-              onPress={() => console.log("Change Password")}
-            />
-            <List.Item
-              title="Manage Subscriptions"
-              left={(props) => <List.Icon {...props} icon="credit-card" />}
-              onPress={() => console.log("Manage Subscriptions")}
-            />
-            <List.Item
-              title="Privacy Options"
-              left={(props) => <List.Icon {...props} icon="shield" />}
-              onPress={() => console.log("Privacy Options")}
-            />
-          </List.Section>
-        </View>
-      </ScrollView>
-    )
+          <List.Item
+            title="Manage Subscriptions"
+            left={(props) => <List.Icon {...props} icon="credit-card" />}
+            onPress={() => console.log("Manage Subscriptions")}
+          />
+          <List.Item
+            title="Privacy Options"
+            left={(props) => <List.Icon {...props} icon="shield" />}
+            onPress={() => console.log("Privacy Options")}
+          />
+        </List.Section>
+      </View>
+    </ScrollView>
+  ) : (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" color="#0000ff" />
+    </View>
   );
 };
 
