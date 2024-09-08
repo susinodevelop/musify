@@ -9,9 +9,17 @@ import {
 import TrackHorizontalCard from "@/presentation/components/TrackHorizontalCard";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { useRepositories } from "../context/AppContext";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { BottomNavigatorStackParams } from "../navigation/BottomNavigator";
 
-const SearchScreen: React.FC<{ title?: string }> = ({ title }) => {
+type SearchScreenRouteProps = RouteProp<BottomNavigatorStackParams, "Search">;
+
+const SearchScreen: React.FC = () => {
   const { trackRepository } = useRepositories();
+
+  const route = useRoute<SearchScreenRouteProps>();
+
+  const title = route.params.title;
 
   const [query, setQuery] = useState<string>("");
   const [tracks, setTracks] = useState<TrackEntity[]>([]);
