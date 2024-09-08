@@ -22,7 +22,6 @@ const LibraryScreen: React.FC = () => {
 
   return (
     <ScreenWithPlayer>
-      {" "}
       <View style={styles.container}>
         <ScrollView style={styles.mainContent}>
           <View style={styles.section}>
