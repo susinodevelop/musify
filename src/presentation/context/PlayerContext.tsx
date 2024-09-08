@@ -1,39 +1,31 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import {
-  Audio,
-  AVPlaybackStatus,
-  InterruptionModeAndroid,
-  InterruptionModeIOS,
-} from "expo-av";
+import { Audio, AVPlaybackSourceObject, AVPlaybackStatusToSet } from "expo-av";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { useRepositories } from "./AppContext";
 
-export enum TrackStatus {
-  UNLOAD,
-  LOADED,
-  PLAYING,
-  WAITING,
-}
-
 interface PlayerContextType {
   track: TrackEntity | null;
-  status: TrackStatus;
+  sound: Audio.Sound | null;
   progress: number;
   isLooping: boolean;
+  isPlaying: boolean;
+  load: (track: TrackEntity) => void;
+  play: () => void;
+  pause: () => void;
   updateProgress: (progress: number) => void;
-  loadAndPlayTrack: (track: TrackEntity) => Promise<void>;
-  pauseTrack: () => Promise<void>;
   changeIsLooping: () => void;
 }
 
 export const PlayerContext = createContext<PlayerContextType>({
   track: null,
-  status: TrackStatus.UNLOAD,
+  sound: null,
   progress: 0,
   isLooping: false,
+  isPlaying: false,
+  load: () => {},
+  play: () => {},
+  pause: () => {},
   updateProgress: () => {},
-  loadAndPlayTrack: async () => {},
-  pauseTrack: async () => {},
   changeIsLooping: () => {},
 });
 
@@ -42,64 +34,53 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [track, setTrack] = useState<TrackEntity | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [soundStatus, setSoundStatus] = useState<AVPlaybackStatus | null>(null);
-  const [status, setStatus] = useState<TrackStatus>(TrackStatus.UNLOAD);
   const [progress, setProgress] = useState<number>(0);
   const [isLooping, setLooping] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const { trackRepository } = useRepositories();
 
-  useEffect(() => {
-    Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      staysActiveInBackground: false,
-      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
-      playThroughEarpieceAndroid: false,
-    });
-  }, []);
-
-  const loadAndPlayTrack = async (newTrack: TrackEntity) => {
-    if (sound) {
-      await sound.unloadAsync();
+  const load = async (newTrack: TrackEntity) => {
+    if (!track || track.id !== newTrack.id) {
+      await sound?.unloadAsync();
+      setTrack(newTrack);
     }
 
-    setTrack(newTrack);
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      {
-        uri: await trackRepository.getStreamUrl(newTrack.id),
-      },
-      {
-        shouldPlay: true,
-        rate: 1.0,
-        isLooping: isLooping,
-        progressUpdateIntervalMillis: 100,
-        shouldCorrectPitch: true,
-        positionMillis: 0,
-      },
-      handlePlaybackStatusUpdate
-    );
+    const playbackSource: AVPlaybackSourceObject = {
+      uri: await trackRepository.getStreamUrl(newTrack.id),
+      overrideFileExtensionAndroid: "mp3",
+    };
 
+    const initialStatus: AVPlaybackStatusToSet = {
+      shouldPlay: true,
+      rate: 1.0,
+      isLooping: isLooping,
+      progressUpdateIntervalMillis: 100,
+      shouldCorrectPitch: true,
+      positionMillis: progress,
+    };
+
+    const newSound = new Audio.Sound();
     setSound(newSound);
-    setStatus(TrackStatus.LOADED);
 
-    await newSound.playAsync();
-    setStatus(TrackStatus.PLAYING);
+    newSound.loadAsync(playbackSource, initialStatus, false).then(() => {
+      setIsPlaying(true);
+    });
   };
 
-  const handlePlaybackStatusUpdate = (playbackStatus: AVPlaybackStatus) => {
-    if (!playbackStatus.isLoaded) {
-      if (playbackStatus.error) {
-        console.error(playbackStatus.error);
-      }
-    } else {
-      if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
-        setStatus(TrackStatus.UNLOAD);
-        setTrack(null);
-        setProgress(0);
-      }
+  const play = async () => {
+    if (sound) {
+      await sound.playAsync().then((status) => {
+        setIsPlaying(status.isLoaded && status.isPlaying);
+      });
+    }
+  };
+
+  const pause = async () => {
+    if (sound) {
+      await sound.pauseAsync().then((status) => {
+        setIsPlaying(status.isLoaded && status.isPlaying);
+      });
     }
   };
 
@@ -115,7 +96,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
               ? status.positionMillis / status.durationMillis
               : 0
           );
-          setSoundStatus(status);
         }
       }, 1000);
     }
@@ -123,32 +103,23 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [status, sound]);
-
-  const pauseTrack = async () => {
-    if (sound && status === TrackStatus.PLAYING) {
-      await sound.pauseAsync();
-      setStatus(TrackStatus.WAITING);
-    }
-  };
+  }, [sound]);
 
   const changeIsLooping = () => {
     setLooping(!isLooping);
   };
 
   const updateProgress = (newProgress: number) => {
-    // console.log("updateProgress", newProgress);//TODO eliminar
-    if (soundStatus?.isLoaded) {
-      const newPositionMillis = soundStatus.durationMillis! * newProgress;
-      setSoundStatus({
-        ...soundStatus,
-        positionMillis: newPositionMillis,
+    if (sound) {
+      sound.getStatusAsync().then((status) => {
+        if (status.isLoaded && status.isPlaying) {
+          const newPositionMillis = status.durationMillis! * newProgress;
+          sound.setPositionAsync(newPositionMillis).catch((error) => {
+            console.error("Error setting position:", error);
+          });
+          setProgress(newProgress);
+        }
       });
-      sound?.setPositionAsync(newPositionMillis).catch((error) => {
-        console.error("Error setting position:", error);
-      });
-
-      setProgress(newProgress);
     }
   };
 
@@ -156,12 +127,14 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     <PlayerContext.Provider
       value={{
         track,
-        status,
+        sound,
         progress,
         isLooping,
         updateProgress,
-        loadAndPlayTrack,
-        pauseTrack,
+        isPlaying,
+        load,
+        play,
+        pause,
         changeIsLooping,
       }}
     >

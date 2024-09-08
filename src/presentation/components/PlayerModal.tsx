@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet, Modal, Pressable } from "react-native";
 import { IconButton } from "react-native-paper";
-import { PlayerContext, TrackStatus } from "../context/PlayerContext";
+import { PlayerContext } from "../context/PlayerContext";
 import DraggableProgressBar from "./DraggableProgressBar";
 import TrackEntity from "@/domain/entities/TrackEntity";
 
@@ -17,21 +17,31 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
   onClose,
 }) => {
   const {
-    loadAndPlayTrack,
-    pauseTrack,
-    status,
+    track: currentTrack,
+    load,
+    play,
+    pause,
     progress,
     updateProgress,
     isLooping,
+    isPlaying,
     changeIsLooping,
   } = useContext(PlayerContext);
 
   const togglePlayPause = async () => {
-    if (status === TrackStatus.PLAYING) {
-      await pauseTrack();
-    } else if (track) {
-      await loadAndPlayTrack(track);
+    if (!currentTrack || currentTrack.id !== track.id) {
+      await load(track);
+      return;
     }
+    if (isPlaying) {
+      await pause();
+    } else {
+      await play();
+    }
+  };
+
+  const isCurrentPlaying = () => {
+    return isPlaying && currentTrack!.id === track.id;
   };
 
   return (
@@ -62,7 +72,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
               onPress={() => alert("Previous")}
             />
             <IconButton
-              icon={status === TrackStatus.PLAYING ? "pause" : "play"}
+              icon={isCurrentPlaying() ? "pause" : "play"}
               size={40}
               onPress={togglePlayPause}
             />
@@ -81,9 +91,10 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
           <View style={{ height: 50 }}>
             <DraggableProgressBar
               width={300}
-              progress={progress}
+              progress={isCurrentPlaying() ? progress : 0}
               setProgress={updateProgress}
               color="#00BFFF" //TODO revisar
+              allowDragging={isCurrentPlaying()}
             />
           </View>
 

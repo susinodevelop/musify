@@ -24,6 +24,7 @@ interface DraggableProgressBarProps {
   progress: number;
   setProgress: (progress: number) => void;
   color?: string;
+  allowDragging?: boolean;
 }
 
 const DraggableProgressBar = gestureHandlerRootHOC(
@@ -32,20 +33,21 @@ const DraggableProgressBar = gestureHandlerRootHOC(
     progress,
     setProgress,
     color = "red",
+    allowDragging = true,
   }: DraggableProgressBarProps) => {
     const thisX = useSharedValue(progress);
-    const [width, setWidth] = useState(0);
+    const [total, setTotal] = useState(0);
 
     const onLayout = (event: LayoutChangeEvent) => {
-      const { width } = event.nativeEvent.layout;
-      setWidth(width);
+      const { width: newTotal } = event.nativeEvent.layout;
+      setTotal(newTotal);
     };
 
     const pan = Gesture.Pan()
-      .enabled(true)
+      .enabled(allowDragging)
       .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
-        const touchX = Math.max(0, Math.min(event.x, width));
-        thisX.value = touchX / width;
+        const touchX = Math.max(0, Math.min(event.x, total));
+        thisX.value = touchX / total;
         runOnJS(setProgress)(thisX.value);
       })
       .onEnd(() => {

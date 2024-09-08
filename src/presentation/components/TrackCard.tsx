@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { IconButton } from "react-native-paper";
 import PlayerModal from "./PlayerModal";
-import { PlayerContext, TrackStatus } from "../context/PlayerContext";
+import { PlayerContext } from "../context/PlayerContext";
 import TrackEntity from "@/domain/entities/TrackEntity";
 
 interface TrackCardProps {
@@ -11,26 +11,32 @@ interface TrackCardProps {
 
 const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
   const {
-    loadAndPlayTrack,
-    pauseTrack,
-    status,
     track: currentTrack,
+    isPlaying,
+    load,
+    play,
+    pause,
   } = useContext(PlayerContext);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const isCurrentTrackPlaying =
-    currentTrack?.id === track.id && status === TrackStatus.PLAYING;
 
   const handlePressNavigation = () => {
     setModalVisible(true);
   };
 
-  const handlePressPlay = async () => {
-    if (isCurrentTrackPlaying) {
-      await pauseTrack();
-    } else {
-      await loadAndPlayTrack(track);
+  const togglePlayPause = async () => {
+    if (!currentTrack || currentTrack.id !== track.id) {
+      await load(track);
+      return;
     }
+    if (isPlaying) {
+      await pause();
+    } else {
+      await play();
+    }
+  };
+
+  const isCurrentPlaying = () => {
+    return isPlaying && currentTrack!.id === track.id;
   };
 
   return (
@@ -52,9 +58,9 @@ const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
             </View>
             <View style={styles.playButtonContainer}>
               <IconButton
-                icon={isCurrentTrackPlaying ? "pause" : "play"}
+                icon={isCurrentPlaying() ? "pause" : "play"}
                 size={24}
-                onPress={handlePressPlay}
+                onPress={togglePlayPause}
               />
             </View>
           </View>

@@ -3,26 +3,41 @@ import TrackEntity from "@/domain/entities/TrackEntity";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import DraggableProgressBar from "./DraggableProgressBar";
 import { IconButton } from "react-native-paper";
-import { PlayerContext, TrackStatus } from "../context/PlayerContext";
+import { PlayerContext } from "../context/PlayerContext";
 
 interface HorizontalPlayerProps {
   track: TrackEntity;
 }
 
 const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
-  const { loadAndPlayTrack, pauseTrack, status, progress, updateProgress } =
-    useContext(PlayerContext);
+  const {
+    track: currentTrack,
+    isPlaying,
+    load,
+    play,
+    pause,
+    progress,
+    updateProgress,
+  } = useContext(PlayerContext);
 
   const durationInMinutes = (track.duration / 60).toFixed(2);
   const progressInSeconds = track.duration * progress;
   const progressInMinutes = (progressInSeconds / 60).toFixed(2);
 
   const togglePlayPause = async () => {
-    if (status === TrackStatus.PLAYING) {
-      await pauseTrack();
-    } else if (track) {
-      await loadAndPlayTrack(track);
+    if (!currentTrack || currentTrack.id !== track.id) {
+      await load(track);
+      return;
     }
+    if (isPlaying) {
+      await pause();
+    } else {
+      await play();
+    }
+  };
+
+  const isCurrentPlaying = () => {
+    return isPlaying && currentTrack!.id === track.id;
   };
 
   return (
@@ -34,8 +49,9 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
 
           <DraggableProgressBar
             width={200}
-            progress={progress}
+            progress={isCurrentPlaying() ? progress : 0}
             setProgress={updateProgress}
+            allowDragging={isCurrentPlaying()}
           />
           <View style={styles.timeContainer}>
             <Text style={styles.time}>{`${progressInMinutes} / `}</Text>
@@ -45,7 +61,7 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
 
         <View style={styles.reproductorContainer}>
           <IconButton
-            icon={status === TrackStatus.PLAYING ? "pause" : "play"}
+            icon={isCurrentPlaying() ? "pause" : "play"}
             size={40}
             onPress={togglePlayPause}
           />
