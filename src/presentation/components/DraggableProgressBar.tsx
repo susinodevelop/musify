@@ -1,5 +1,5 @@
 import { container } from "inversify/inversify.config";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   LayoutChangeEvent,
@@ -38,6 +38,10 @@ const DraggableProgressBar = gestureHandlerRootHOC(
     const thisX = useSharedValue(progress);
     const [total, setTotal] = useState(0);
 
+    useEffect(() => {
+      thisX.value = progress;
+    }, [progress]);
+
     const onLayout = (event: LayoutChangeEvent) => {
       const { width: newTotal } = event.nativeEvent.layout;
       setTotal(newTotal);
@@ -48,7 +52,6 @@ const DraggableProgressBar = gestureHandlerRootHOC(
       .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
         const touchX = Math.max(0, Math.min(event.x, total));
         thisX.value = touchX / total;
-        runOnJS(setProgress)(thisX.value);
       })
       .onEnd(() => {
         runOnJS(setProgress)(thisX.value);
