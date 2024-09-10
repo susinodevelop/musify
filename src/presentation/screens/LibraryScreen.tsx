@@ -50,7 +50,7 @@ const LibraryScreen: React.FC = () => {
             </Button>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {playlists.map((playlist) => (
-                <PlaylistCard playlist={playlist} />
+                <PlaylistCard key={playlist.id} playlist={playlist} />
               ))}
             </ScrollView>
           </View>

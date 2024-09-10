@@ -13,7 +13,6 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist }) => {
   //TODO revisar para que sea navegable y estilizar en tema dark
   return (
     <Card
-      key={playlist.id}
       style={{
         backgroundColor: themeColors.playlistCardBackground,
         shadowColor: themeColors.playlistCardShadow,
