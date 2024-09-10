@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import DraggableProgressBar from "./DraggableProgressBar";
-import { IconButton } from "react-native-paper";
+import { ActivityIndicator, IconButton } from "react-native-paper";
 import { PlayerContext } from "../context/PlayerContext";
 import { ThemeContext } from "../context/ThemeContext";
 
@@ -14,6 +14,7 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
   const { themeColors } = useContext(ThemeContext);
   const {
     track: currentTrack,
+    isLoaded,
     isPlaying,
     load,
     play,
@@ -73,13 +74,19 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
           </View>
         </View>
 
-        <View style={styles.reproductorContainer}>
-          <IconButton
-            icon={isCurrentPlaying() ? "pause" : "play"}
-            size={40}
-            onPress={togglePlayPause}
-          />
-        </View>
+        {isLoaded ? (
+          <View style={styles.reproductorContainer}>
+            <IconButton
+              icon={isCurrentPlaying() ? "pause" : "play"}
+              size={40}
+              onPress={togglePlayPause}
+            />
+          </View>
+        ) : (
+          <View style={styles.reproductorContainer}>
+            <ActivityIndicator />
+          </View>
+        )}
       </View>
     </Pressable>
   );

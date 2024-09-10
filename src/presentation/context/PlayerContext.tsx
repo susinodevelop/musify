@@ -9,6 +9,7 @@ interface PlayerContextType {
   progress: number;
   isLooping: boolean;
   isPlaying: boolean;
+  isLoaded: boolean;
   load: (track: TrackEntity) => void;
   play: () => void;
   pause: () => void;
@@ -21,6 +22,7 @@ export const PlayerContext = createContext<PlayerContextType>({
   sound: null,
   progress: 0,
   isLooping: false,
+  isLoaded: false,
   isPlaying: false,
   load: () => {},
   play: () => {},
@@ -36,12 +38,15 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [progress, setProgress] = useState<number>(0);
   const [isLooping, setLooping] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const { trackRepository } = useRepositories();
 
   const load = async (newTrack: TrackEntity) => {
     if (!track || track.id !== newTrack.id) {
+      setIsLoaded(false);
+      setIsPlaying(false);
       await sound?.unloadAsync();
       setTrack(newTrack);
     }
@@ -64,6 +69,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     setSound(newSound);
 
     newSound.loadAsync(playbackSource, initialStatus, false).then(() => {
+      setIsLoaded(true);
       setIsPlaying(true);
     });
   };
@@ -131,6 +137,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         progress,
         isLooping,
         updateProgress,
+        isLoaded,
         isPlaying,
         load,
         play,
