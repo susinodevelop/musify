@@ -19,6 +19,8 @@ export interface ThemeColors {
   artistCardShadow: string;
   artistCardHorizontalBackground: string;
   artistCardHorizontalShadow: string;
+  configurationCardBackground: string;
+  configurationCardShadow: string;
   inputTextColor: string;
   inputTextPlaceholderColor: string;
   inputTextBackground: string;
@@ -54,6 +56,8 @@ export const lightTheme: ThemeColors = {
   artistCardShadow: "#000",
   artistCardHorizontalBackground: "#f8f8f8",
   artistCardHorizontalShadow: "#000",
+  configurationCardBackground: "#f8f8f8",
+  configurationCardShadow: "#000",
   inputTextColor: "black",
   inputTextPlaceholderColor: "gray",
   inputTextBackground: "white",
@@ -89,6 +93,8 @@ export const darkTheme: ThemeColors = {
   artistCardShadow: "#fff",
   artistCardHorizontalBackground: "#212121",
   artistCardHorizontalShadow: "#fff",
+  configurationCardBackground: "#333333",
+  configurationCardShadow: "#fff",
   inputTextColor: "white",
   inputTextPlaceholderColor: "lightgray",
   inputTextBackground: "#212121",
