@@ -14,33 +14,51 @@ const ConfigurationScreen = () => {
     }
   };
 
+  const onPressChangePassword = () => {
+    alert("Función no implementada aún"); //TODO revisar metodo y estilos del boton
+  };
+
   return (
     <Screen>
       <View
         style={{
           backgroundColor: themeColors.configurationCardBackground,
           shadowColor: themeColors.configurationCardShadow,
-          ...styles.viewTheme,
+          ...styles.configurationView,
+          ...styles.themeView,
         }}
       >
-        <Text style={{ color: themeColors.text }}>
-          Tema : {theme === "dark" ? "Oscuro" : "Claro"}
+        <Text style={{ color: themeColors.text, ...styles.configurationText }}>
+          Tema: {theme === "dark" ? "Oscuro" : "Claro"}
         </Text>
         <Switch value={theme === "dark"} onValueChange={toggleTheme} />
       </View>
+      <Pressable onPress={onPressChangePassword}>
+        <View
+          style={{
+            backgroundColor: themeColors.configurationCardBackground,
+            shadowColor: themeColors.configurationCardShadow,
+            ...styles.configurationView,
+            ...styles.changePasswordView,
+          }}
+        >
+          <Text
+            style={{ color: themeColors.text, ...styles.configurationText }}
+          >
+            Cambiar contraseña
+          </Text>
+        </View>
+      </Pressable>
     </Screen>
   );
 };
 
 const styles = StyleSheet.create({
-  viewTheme: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  configurationView: {
     marginHorizontal: 20,
     marginVertical: 10,
     alignItems: "center",
     borderRadius: 20,
-    paddingHorizontal: 20,
     elevation: 5,
     shadowOffset: {
       width: 5,
@@ -48,6 +66,17 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 1,
     shadowRadius: 3,
+  },
+  themeView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+  },
+  changePasswordView: {
+    paddingVertical: 12,
+  },
+  configurationText: {
+    fontSize: 16,
   },
 });
 
