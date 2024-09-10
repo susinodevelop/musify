@@ -126,44 +126,6 @@ const ProfileScreen: React.FC = () => {
             }}
           />
         </View>
-
-        <Divider style={styles.divider} />
-
-        <View style={styles.section}>
-          <Text style={{ color: themeColors.title, ...styles.sectionTitle }}>
-            Account Settings
-          </Text>
-          <List.Section>
-            <List.Item
-              title="Change Password"
-              titleStyle={{ color: themeColors.title }}
-              left={(props) => (
-                <List.Icon {...props} icon="lock" color={themeColors.text} />
-              )}
-              onPress={() => console.log("Change Password")}
-            />
-            <List.Item
-              title="Manage Subscriptions"
-              titleStyle={{ color: themeColors.title }}
-              left={(props) => (
-                <List.Icon
-                  {...props}
-                  icon="credit-card"
-                  color={themeColors.text}
-                />
-              )}
-              onPress={() => console.log("Manage Subscriptions")}
-            />
-            <List.Item
-              title="Privacy Options"
-              titleStyle={{ color: themeColors.title }}
-              left={(props) => (
-                <List.Icon {...props} icon="shield" color={themeColors.text} />
-              )}
-              onPress={() => console.log("Privacy Options")}
-            />
-          </List.Section>
-        </View>
       </ScrollView>
     </Screen>
   ) : (

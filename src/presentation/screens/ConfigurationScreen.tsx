@@ -18,6 +18,14 @@ const ConfigurationScreen = () => {
     alert("Función no implementada aún"); //TODO revisar metodo y estilos del boton
   };
 
+  const onPressManageSubscriptions = () => {
+    alert("Función no implementada aún"); //TODO revisar metodo y estilos del boton
+  };
+
+  const onPressPrivacyOptions = () => {
+    alert("Función no implementada aún"); //TODO revisar metodo y estilos del boton
+  };
+
   return (
     <Screen>
       <View
@@ -46,6 +54,39 @@ const ConfigurationScreen = () => {
             style={{ color: themeColors.text, ...styles.configurationText }}
           >
             Cambiar contraseña
+          </Text>
+        </View>
+      </Pressable>
+
+      <Pressable onPress={onPressManageSubscriptions}>
+        <View
+          style={{
+            backgroundColor: themeColors.configurationCardBackground,
+            shadowColor: themeColors.configurationCardShadow,
+            ...styles.configurationView,
+            ...styles.changePasswordView,
+          }}
+        >
+          <Text
+            style={{ color: themeColors.text, ...styles.configurationText }}
+          >
+            Gestionar suscripciones
+          </Text>
+        </View>
+      </Pressable>
+      <Pressable onPress={onPressPrivacyOptions}>
+        <View
+          style={{
+            backgroundColor: themeColors.configurationCardBackground,
+            shadowColor: themeColors.configurationCardShadow,
+            ...styles.configurationView,
+            ...styles.changePasswordView,
+          }}
+        >
+          <Text
+            style={{ color: themeColors.text, ...styles.configurationText }}
+          >
+            Opciones de privacidad
           </Text>
         </View>
       </Pressable>
