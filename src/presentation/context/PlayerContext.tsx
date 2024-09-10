@@ -47,7 +47,8 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     if (!track || track.id !== newTrack.id) {
       setIsLoaded(false);
       setIsPlaying(false);
-      await sound?.unloadAsync();
+      sound?.unloadAsync();
+      setProgress(0);
       setTrack(newTrack);
     }
 

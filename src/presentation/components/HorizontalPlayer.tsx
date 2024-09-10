@@ -60,7 +60,7 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
 
           <DraggableProgressBar
             width={200}
-            progress={isCurrentPlaying() ? progress : 0}
+            progress={currentTrack?.id === track.id ? progress : 0}
             setProgress={updateProgress}
             allowDragging={isCurrentPlaying()}
           />
