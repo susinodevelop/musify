@@ -61,7 +61,7 @@ export const lightTheme: ThemeColors = {
   inputTextColor: "black",
   inputTextPlaceholderColor: "gray",
   inputTextBackground: "white",
-  drawerNavigationBackground: "#f8f8f8",
+  drawerNavigationBackground: "#fff",
   drawerNavigationActiveText: "black",
   drawerNavigationInactiveText: "gray",
   bottomNavigationBackground: "#f8f8f8",

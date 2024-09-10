@@ -36,6 +36,17 @@ const DrawerNavigator: React.FC = () => {
         drawerStyle: {
           backgroundColor: themeColors.drawerNavigationBackground,
         },
+        drawerContentContainerStyle: {
+          height: "100%",
+          width: "100%",
+          justifyContent: "center",
+        },
+        drawerLabelStyle: {
+          fontSize: 16,
+        },
+        drawerItemStyle: {
+          marginVertical: 5,
+        },
         drawerActiveTintColor: themeColors.drawerNavigationActiveText,
         drawerInactiveTintColor: themeColors.drawerNavigationInactiveText,
         headerStyle: {
@@ -44,7 +55,11 @@ const DrawerNavigator: React.FC = () => {
         headerTintColor: themeColors.drawerNavigationActiveText,
       })}
     >
-      <DrawerTab.Screen name="BottomTabNavigator" component={BottomNavigator} />
+      <DrawerTab.Screen
+        name="BottomTabNavigator"
+        component={BottomNavigator}
+        options={{ drawerLabel: "Volver" }}
+      />
       <DrawerTab.Screen name="Configuration" component={ConfigurationScreen} />
       <DrawerTab.Screen name="Profile" component={ProfileScreen} />
       <DrawerTab.Screen name="Support" component={SupportScreen} />
