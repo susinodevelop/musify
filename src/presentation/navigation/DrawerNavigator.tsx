@@ -6,12 +6,13 @@ import SupportScreen from "@/presentation/screens/SupportScreen";
 import CloseSessionScreen from "@/presentation/screens/CloseSessionScreen";
 import BottomNavigator from "./BottomNavigator";
 import { ThemeContext } from "../context/ThemeContext";
+import ProfileScreen from "../screens/ProfileScreen";
 
 export type DrawerNavigatorStackParams = {
   BottomTabNavigator: undefined;
   Configuration: undefined;
+  Profile: undefined;
   Support: undefined;
-  CloseSession: undefined;
 };
 
 const DrawerTab = createDrawerNavigator<DrawerNavigatorStackParams>();
@@ -45,8 +46,8 @@ const DrawerNavigator: React.FC = () => {
     >
       <DrawerTab.Screen name="BottomTabNavigator" component={BottomNavigator} />
       <DrawerTab.Screen name="Configuration" component={ConfigurationScreen} />
+      <DrawerTab.Screen name="Profile" component={ProfileScreen} />
       <DrawerTab.Screen name="Support" component={SupportScreen} />
-      <DrawerTab.Screen name="CloseSession" component={CloseSessionScreen} />
     </DrawerTab.Navigator>
   );
 };

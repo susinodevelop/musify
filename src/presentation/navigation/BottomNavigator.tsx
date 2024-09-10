@@ -17,7 +17,6 @@ export type BottomNavigatorStackParams = {
     title?: string;
   };
   Library: undefined;
-  Profile: undefined;
 };
 
 const BottomTab = createBottomTabNavigator<BottomNavigatorStackParams>();
@@ -51,9 +50,6 @@ const BottomNavigator: React.FC = () => {
             case "Library":
               iconName = focused ? "library" : "library-outline";
               break;
-            case "Profile":
-              iconName = focused ? "person" : "person-outline";
-              break;
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -64,7 +60,6 @@ const BottomNavigator: React.FC = () => {
       <BottomTab.Screen name="Explore" component={ExploreScreen} />
       <BottomTab.Screen name="Search" component={SearchScreen} />
       <BottomTab.Screen name="Library" component={LibraryScreen} />
-      <BottomTab.Screen name="Profile" component={ProfileScreen} />
     </BottomTab.Navigator>
   );
 };
