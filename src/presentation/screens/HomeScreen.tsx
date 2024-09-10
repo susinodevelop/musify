@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Text } from "react-native";
 import TrackCard from "../components/TrackCard";
 import { ScrollView } from "react-native-gesture-handler";
@@ -8,8 +8,10 @@ import { BottomNavigatorStackParams } from "@/presentation/navigation/BottomNavi
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { useRepositories } from "../context/AppContext";
 import ScreenWithPlayer from "../components/ScreenWithPlayer";
+import { ThemeContext } from "../context/ThemeContext";
 
 const HomeScreen: React.FC = () => {
+  const { themeColors } = useContext(ThemeContext);
   const { trackRepository } = useRepositories();
   const navigation =
     useNavigation<NavigationProp<BottomNavigatorStackParams>>();
@@ -39,45 +41,91 @@ const HomeScreen: React.FC = () => {
 
   return (
     <ScreenWithPlayer>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={{
+          backgroundColor: themeColors.screenBackground,
+          ...styles.container,
+        }}
+      >
         <TextInput
-          style={styles.searchInput}
+          style={{
+            backgroundColor: themeColors.inputTextBackground,
+            ...styles.searchInput,
+          }}
+          placeholderTextColor={themeColors.inputTextPlaceholderColor}
+          textColor={themeColors.inputTextColor}
           placeholder="Search for songs..."
           value={query}
           onChangeText={setQuery}
           onSubmitEditing={handleSearch}
         />
         <View>
-          <Text style={styles.titleText}>Para tí</Text>
+          <Text
+            style={{
+              color: themeColors.title,
+              textShadowColor: themeColors.titleShadow,
+              ...styles.titleText,
+            }}
+          >
+            Para tí
+          </Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={forMeTracks}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
           />
         </View>
         <View>
-          <Text style={styles.titleText}>Nuevo</Text>
+          <Text
+            style={{
+              color: themeColors.title,
+              textShadowColor: themeColors.titleShadow,
+              ...styles.titleText,
+            }}
+          >
+            Nuevo
+          </Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={newTracks}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
           />
         </View>
         <View>
-          <Text style={styles.titleText}>Popular</Text>
+          <Text
+            style={{
+              color: themeColors.title,
+              textShadowColor: themeColors.titleShadow,
+              ...styles.titleText,
+            }}
+          >
+            Popular
+          </Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={popularTracks}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
           />
         </View>
         <View>
-          <Text style={styles.titleText}>Reciente</Text>
+          <Text
+            style={{
+              color: themeColors.title,
+              textShadowColor: themeColors.titleShadow,
+              ...styles.titleText,
+            }}
+          >
+            Reciente
+          </Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={recentTracks}
             keyExtractor={(item) => item.id.toString()}
             renderItem={renderItem}
@@ -93,15 +141,13 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   searchInput: {
     height: 60,
-    borderColor: "#ccc",
+    borderColor: "#ccc", //TODO revisar con el tema
     borderWidth: 1,
     marginHorizontal: 30,
     marginVertical: 25,
-    backgroundColor: "#f9f9f9",
   },
   titleText: {
     textAlign: "left",
@@ -109,7 +155,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 25,
     marginLeft: 25,
-    textShadowColor: "lightgray",
     textShadowOffset: {
       width: 3,
       height: 3,

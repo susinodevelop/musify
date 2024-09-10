@@ -1,5 +1,5 @@
 import { container } from "inversify/inversify.config";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   LayoutChangeEvent,
@@ -18,12 +18,12 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
+import { ThemeContext } from "../context/ThemeContext";
 
 interface DraggableProgressBarProps {
   width: DimensionValue;
   progress: number;
   setProgress: (progress: number) => void;
-  color?: string;
   allowDragging?: boolean;
 }
 
@@ -32,9 +32,9 @@ const DraggableProgressBar = gestureHandlerRootHOC(
     width: originalWidth,
     progress,
     setProgress,
-    color = "red",
     allowDragging = true,
   }: DraggableProgressBarProps) => {
+    const { themeColors } = useContext(ThemeContext);
     const thisX = useSharedValue(progress);
     const [total, setTotal] = useState(0);
 
@@ -71,7 +71,7 @@ const DraggableProgressBar = gestureHandlerRootHOC(
               style={[
                 styles.progressBarFill,
                 animatedStyle,
-                { backgroundColor: color },
+                { backgroundColor: themeColors.progressBar },
               ]}
             />
           </View>

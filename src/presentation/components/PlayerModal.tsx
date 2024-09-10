@@ -4,6 +4,7 @@ import { IconButton } from "react-native-paper";
 import { PlayerContext } from "../context/PlayerContext";
 import DraggableProgressBar from "./DraggableProgressBar";
 import TrackEntity from "@/domain/entities/TrackEntity";
+import { ThemeContext } from "../context/ThemeContext";
 
 interface PlayerModalProps {
   track: TrackEntity;
@@ -16,6 +17,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
   visible,
   onClose,
 }) => {
+  const { themeColors } = useContext(ThemeContext);
   const {
     track: currentTrack,
     load,
@@ -46,18 +48,52 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
 
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+      <View
+        style={{
+          backgroundColor: themeColors.playerModalContainerBackground,
+          ...styles.modalContainer,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: themeColors.playerModalBackground,
+            ...styles.modalContent,
+          }}
+        >
           <Pressable onPress={onClose} style={styles.closeButton}>
-            <IconButton icon="close-circle" size={24} iconColor="black" />
+            <IconButton
+              icon="close-circle"
+              size={24}
+              iconColor={themeColors.playerModalCloseButton}
+            />
           </Pressable>
-          <View style={styles.albumArtworkContainer}>
+          <View
+            style={{
+              shadowColor: themeColors.trackCardShadow,
+              ...styles.albumArtworkContainer,
+            }}
+          >
             <Image source={{ uri: track.cover }} style={styles.albumArtwork} />
           </View>
 
           <View style={styles.songDetails}>
-            <Text style={styles.songName}>{track.title}</Text>
-            {/* <Text style={styles.artistAlbum}>{track.artist}</Text> TODO to revisar*/}
+            <Text
+              style={{
+                color: themeColors.title,
+                ...styles.songName,
+              }}
+            >
+              {track.title}
+            </Text>
+            {/* <Text
+              style={{
+                color: themeColors.text,
+                ...styles.artistAlbum,
+              }}
+            >
+              {track.artist}
+            </Text>
+            TODO to revisar */}
           </View>
 
           <View style={styles.playbackControls}>
@@ -93,7 +129,6 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
               width={300}
               progress={isCurrentPlaying() ? progress : 0}
               setProgress={updateProgress}
-              color="#00BFFF" //TODO revisar
               allowDragging={isCurrentPlaying()}
             />
           </View>
@@ -126,11 +161,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
     width: "90%",
-    backgroundColor: "white",
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
@@ -140,7 +173,6 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 18,
-    color: "black",
   },
   albumArtwork: {
     borderRadius: 10,
@@ -148,7 +180,6 @@ const styles = StyleSheet.create({
     height: 300,
   },
   albumArtworkContainer: {
-    shadowColor: "black",
     shadowOffset: { width: 5, height: 5 },
     shadowOpacity: 1,
     shadowRadius: 4,
@@ -162,11 +193,9 @@ const styles = StyleSheet.create({
   songName: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "black",
   },
   artistAlbum: {
     fontSize: 16,
-    color: "#888",
     marginTop: 4,
   },
   playbackControls: {

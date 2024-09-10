@@ -3,13 +3,13 @@ import { Text, View } from "react-native";
 import Screen from "@/presentation/components/Screen";
 import { ThemeContext } from "../context/ThemeContext";
 
-const SupportScreen = () => {
+const CloseSessionScreen = () => {
   const { themeColors } = useContext(ThemeContext);
-
   return (
     <Screen>
-      <Text style={{ color: themeColors.text }}>Support Screen</Text>
+      <Text style={{ color: themeColors.text }}>Close Session</Text>
     </Screen>
   );
 };
-export default SupportScreen;
+
+export default CloseSessionScreen;

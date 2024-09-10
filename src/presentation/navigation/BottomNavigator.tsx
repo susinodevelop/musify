@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeScreen from "@/presentation/screens/HomeScreen";
@@ -6,6 +6,7 @@ import SearchScreen from "@/presentation/screens/SearchScreen";
 import ProfileScreen from "@/presentation/screens/ProfileScreen";
 import LibraryScreen from "@/presentation/screens/LibraryScreen";
 import ExploreScreen from "@/presentation/screens/ExploreScreen";
+import { ThemeContext } from "../context/ThemeContext";
 
 type IoniconsName = keyof typeof Ionicons.glyphMap;
 
@@ -22,11 +23,18 @@ export type BottomNavigatorStackParams = {
 const BottomTab = createBottomTabNavigator<BottomNavigatorStackParams>();
 
 const BottomNavigator: React.FC = () => {
+  const { themeColors } = useContext(ThemeContext);
+
   return (
     <BottomTab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarShowLabel: true,
+        tabBarActiveTintColor: themeColors.bottomNavigationActiveText,
+        tabBarInactiveTintColor: themeColors.bottomNavigationInactiveText,
+        tabBarStyle: {
+          backgroundColor: themeColors.bottomNavigationBackground,
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: IoniconsName = "home";
 

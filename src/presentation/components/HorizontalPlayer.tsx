@@ -4,12 +4,14 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import DraggableProgressBar from "./DraggableProgressBar";
 import { IconButton } from "react-native-paper";
 import { PlayerContext } from "../context/PlayerContext";
+import { ThemeContext } from "../context/ThemeContext";
 
 interface HorizontalPlayerProps {
   track: TrackEntity;
 }
 
 const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
+  const { themeColors } = useContext(ThemeContext);
   const {
     track: currentTrack,
     isPlaying,
@@ -42,10 +44,18 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
 
   return (
     <Pressable>
-      <View style={styles.container}>
+      <View
+        style={{
+          backgroundColor: themeColors.horizontalPlayerBackground,
+          shadowColor: themeColors.horizontalPlayerShadow,
+          ...styles.container,
+        }}
+      >
         <Image source={{ uri: track.cover }} style={styles.image} />
         <View style={styles.details}>
-          <Text style={styles.title}>{track.title}</Text>
+          <Text style={{ color: themeColors.title, ...styles.title }}>
+            {track.title}
+          </Text>
 
           <DraggableProgressBar
             width={200}
@@ -54,8 +64,12 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
             allowDragging={isCurrentPlaying()}
           />
           <View style={styles.timeContainer}>
-            <Text style={styles.time}>{`${progressInMinutes} / `}</Text>
-            <Text style={styles.duration}>{`${durationInMinutes} min`}</Text>
+            <Text
+              style={{ color: themeColors.text, ...styles.time }}
+            >{`${progressInMinutes} / `}</Text>
+            <Text
+              style={{ color: themeColors.text, ...styles.duration }}
+            >{`${durationInMinutes} min`}</Text>
           </View>
         </View>
 
@@ -74,11 +88,9 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#f8f8f8",
     borderRadius: 8,
     alignItems: "center",
     elevation: 4,
-    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -98,7 +110,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 12,
     fontWeight: "bold",
-    color: "black",
     marginBottom: 10,
   },
   reproductorContainer: {
@@ -113,11 +124,9 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 12,
-    color: "black",
   },
   duration: {
     fontSize: 12,
-    color: "black",
     textAlign: "right",
   },
 });

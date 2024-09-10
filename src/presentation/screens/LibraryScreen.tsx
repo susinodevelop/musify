@@ -1,13 +1,18 @@
 import ArtistEntity from "@/domain/entities/ArtistEntity";
 import PlaylistEntity from "@/domain/entities/PlaylistEntity";
 import TrackEntity from "@/domain/entities/TrackEntity";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, Image } from "react-native";
 import { Appbar, Button, Card, Text, List } from "react-native-paper";
 import { useRepositories } from "../context/AppContext";
 import ScreenWithPlayer from "../components/ScreenWithPlayer";
+import { ThemeContext } from "../context/ThemeContext";
+import TrackCard from "../components/TrackCard";
+import PlaylistCard from "../components/PlaylistCard";
+import AritstCard from "../components/ArtistCard";
 
 const LibraryScreen: React.FC = () => {
+  const { themeColors } = useContext(ThemeContext);
   const { trackRepository, playlistRepository, artistRepository } =
     useRepositories();
   const [playlists, setPlaylists] = useState<PlaylistEntity[]>([]);
@@ -22,10 +27,18 @@ const LibraryScreen: React.FC = () => {
 
   return (
     <ScreenWithPlayer>
-      <View style={styles.container}>
+      <View
+        style={{
+          backgroundColor: themeColors.screenBackground,
+          ...styles.container,
+        }}
+      >
         <ScrollView style={styles.mainContent}>
           <View style={styles.section}>
-            <Text variant="titleLarge" style={styles.sectionTitle}>
+            <Text
+              variant="titleLarge"
+              style={{ color: themeColors.title, ...styles.sectionTitle }}
+            >
               Playlists
             </Text>
             <Button
@@ -35,26 +48,18 @@ const LibraryScreen: React.FC = () => {
             >
               Añadir Nueva Playlist
             </Button>
-            <ScrollView horizontal>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {playlists.map((playlist) => (
-                <Card key={playlist.id} style={styles.gridItem}>
-                  <Card.Cover
-                    source={{ uri: playlist.cover }}
-                    style={styles.gridItemCover}
-                  />
-                  <Card.Content>
-                    <Text variant="titleMedium">{playlist.title}</Text>
-                    <Text variant="bodyMedium" style={styles.gridSubtitle}>
-                      {playlist.totalTracks} - Canciones
-                    </Text>
-                  </Card.Content>
-                </Card>
+                <PlaylistCard playlist={playlist} />
               ))}
             </ScrollView>
           </View>
 
           <View style={styles.section}>
-            <Text variant="titleLarge" style={styles.sectionTitle}>
+            <Text
+              variant="titleLarge"
+              style={{ color: themeColors.title, ...styles.sectionTitle }}
+            >
               Canciones Favoritas
             </Text>
 
@@ -64,6 +69,8 @@ const LibraryScreen: React.FC = () => {
                   key={track.id}
                   title={track.title}
                   description={`${track.artist.name} - ${track.genre}`}
+                  titleStyle={{ color: themeColors.title }}
+                  descriptionStyle={{ color: themeColors.text }}
                   left={() => (
                     <Image
                       source={{ uri: track.cover }}
@@ -78,45 +85,38 @@ const LibraryScreen: React.FC = () => {
           </View>
 
           <View style={styles.section}>
-            <Text variant="titleLarge" style={styles.sectionTitle}>
+            <Text
+              variant="titleLarge"
+              style={{ color: themeColors.title, ...styles.sectionTitle }}
+            >
               Artistas
             </Text>
-            <ScrollView horizontal>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {artists.map((artist) => (
-                <Card key={artist.id} style={styles.gridItem}>
-                  <Card.Cover
-                    source={{ uri: artist.cover }}
-                    style={styles.gridItemCover}
-                  />
-                  <Card.Content>
-                    <Text variant="titleMedium">{artist.name}</Text>
-                  </Card.Content>
-                </Card>
+                <AritstCard key={artist.id} artist={artist} />
               ))}
             </ScrollView>
           </View>
 
           <View style={styles.section}>
-            <Text variant="titleLarge" style={styles.sectionTitle}>
+            <Text
+              variant="titleLarge"
+              style={{ color: themeColors.title, ...styles.sectionTitle }}
+            >
               Descargas
             </Text>
-            <ScrollView horizontal>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {tracks.map((track) => (
-                <Card key={track.id} style={styles.gridItem}>
-                  <Card.Cover
-                    source={{ uri: track.cover }}
-                    style={styles.gridItemCover}
-                  />
-                  <Card.Content>
-                    <Text variant="titleMedium">{track.title}</Text>
-                  </Card.Content>
-                </Card>
+                <TrackCard key={track.id} track={track} />
               ))}
             </ScrollView>
           </View>
 
           <View style={styles.section}>
-            <Text variant="titleLarge" style={styles.sectionTitle}>
+            <Text
+              variant="titleLarge"
+              style={{ color: themeColors.title, ...styles.sectionTitle }}
+            >
               Historial
             </Text>
             <List.Section>
@@ -125,7 +125,11 @@ const LibraryScreen: React.FC = () => {
                   key={track.id}
                   title={track.title}
                   description={track.description}
-                  left={() => <List.Icon icon="history" />}
+                  titleStyle={{ color: themeColors.title }}
+                  descriptionStyle={{ color: themeColors.text }}
+                  left={() => (
+                    <List.Icon icon="history" color={themeColors.text} />
+                  )}
                 />
               ))}
             </List.Section>
@@ -141,7 +145,6 @@ export default LibraryScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   mainContent: {
     flex: 1,
@@ -155,18 +158,5 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginBottom: 10,
-  },
-  gridItem: {
-    width: 300,
-    height: 400,
-    marginHorizontal: 20,
-    marginBottom: 15,
-  },
-  gridItemCover: {
-    width: 300,
-    height: 300,
-  },
-  gridSubtitle: {
-    color: "#666",
   },
 });

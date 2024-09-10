@@ -4,12 +4,14 @@ import { IconButton } from "react-native-paper";
 import PlayerModal from "./PlayerModal";
 import { PlayerContext } from "../context/PlayerContext";
 import TrackEntity from "@/domain/entities/TrackEntity";
+import { ThemeContext } from "../context/ThemeContext";
 
 interface TrackCardProps {
   track: TrackEntity;
 }
 
 const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
+  const { themeColors } = useContext(ThemeContext);
   const {
     track: currentTrack,
     isPlaying,
@@ -42,7 +44,13 @@ const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
   return (
     <>
       <Pressable onPress={handlePressNavigation}>
-        <View style={styles.card}>
+        <View
+          style={{
+            backgroundColor: themeColors.trackCardBackground,
+            shadowColor: themeColors.trackCardShadow,
+            ...styles.card,
+          }}
+        >
           <View>
             <Image source={{ uri: track.cover }} style={styles.cover} />
           </View>
@@ -53,8 +61,12 @@ const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
             }}
           >
             <View style={styles.info}>
-              <Text style={styles.title}>{track.title}</Text>
-              <Text style={styles.artist}>{track.artist.name}</Text>
+              <Text style={{ color: themeColors.title, ...styles.title }}>
+                {track.title}
+              </Text>
+              <Text style={{ color: themeColors.text, ...styles.artist }}>
+                {track.artist.name}
+              </Text>
             </View>
             <View style={styles.playButtonContainer}>
               <IconButton
@@ -78,12 +90,10 @@ const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "column",
-    backgroundColor: "#f8f8f8",
     marginVertical: 8,
     borderRadius: 25,
     overflow: "hidden",
     elevation: 4,
-    shadowColor: "#000",
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
@@ -107,7 +117,6 @@ const styles = StyleSheet.create({
   },
   artist: {
     fontSize: 14,
-    color: "#666",
     marginTop: 4,
   },
   playButtonContainer: {

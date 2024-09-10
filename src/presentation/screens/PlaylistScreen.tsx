@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -12,8 +12,11 @@ import TrackHorizontalCard from "@/presentation/components/TrackHorizontalCard";
 import PlaylistEntity from "@/domain/entities/PlaylistEntity";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { useRepositories } from "../context/AppContext";
+import { ThemeContext } from "../context/ThemeContext";
+import ScreenWithPlayer from "../components/ScreenWithPlayer";
 
 const PlaylistScreen = () => {
+  const { themeColors } = useContext(ThemeContext);
   const { playlistRepository, userRepository } = useRepositories();
   const [playlist, setPlaylist] = useState<PlaylistEntity>();
   const [tracks, setTracks] = useState<TrackEntity[]>();
@@ -38,9 +41,11 @@ const PlaylistScreen = () => {
 
   return (
     playlist && (
-      <View style={styles.container}>
+      <ScreenWithPlayer>
         <Image source={{ uri: playlist.cover }} style={styles.coverImage} />
-        <Text style={styles.description}>{playlist.description}</Text>
+        <Text style={{ color: themeColors.text, ...styles.description }}>
+          {playlist.description}
+        </Text>
 
         <FlatList
           data={tracks}
@@ -52,30 +57,25 @@ const PlaylistScreen = () => {
         <View style={styles.interactionButtons}>
           <Pressable style={styles.button}>
             <Ionicons name="heart-outline" size={24} color="black" />
-            <Text>Follow</Text>
+            <Text style={{ color: themeColors.text }}>Follow</Text>
           </Pressable>
 
           <Pressable style={styles.button}>
             <Ionicons name="star-outline" size={24} color="black" />
-            <Text>Favorite</Text>
+            <Text style={{ color: themeColors.text }}>Favorite</Text>
           </Pressable>
 
           <Pressable style={styles.button}>
             <Ionicons name="download-outline" size={24} color="black" />
-            <Text>Download</Text>
+            <Text style={{ color: themeColors.text }}>Download</Text>
           </Pressable>
         </View>
-      </View>
+      </ScreenWithPlayer>
     )
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
-  },
   coverImage: {
     width: "100%",
     height: 200,
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: "#333",
     marginBottom: 20,
   },
   songList: {
@@ -96,11 +95,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  songTitle: {
-    fontSize: 16,
-    color: "#000",
+    borderBottomColor: "#ddd", //TODO revisar con el tema
   },
   interactionButtons: {
     flexDirection: "row",

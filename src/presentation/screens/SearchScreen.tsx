@@ -1,26 +1,23 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  TextInput,
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, ActivityIndicator, FlatList, StyleSheet } from "react-native";
 import TrackHorizontalCard from "@/presentation/components/TrackHorizontalCard";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { useRepositories } from "../context/AppContext";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { BottomNavigatorStackParams } from "../navigation/BottomNavigator";
 import ScreenWithPlayer from "../components/ScreenWithPlayer";
+import { ThemeContext } from "../context/ThemeContext";
+import { TextInput } from "react-native-paper";
 
 type SearchScreenRouteProps = RouteProp<BottomNavigatorStackParams, "Search">;
 
 const SearchScreen: React.FC = () => {
+  const { themeColors } = useContext(ThemeContext);
   const { trackRepository } = useRepositories();
 
   const route = useRoute<SearchScreenRouteProps>();
 
-  const title = route.params?.title ;
+  const title = route.params?.title;
 
   const [query, setQuery] = useState<string>("");
   const [tracks, setTracks] = useState<TrackEntity[]>([]);
@@ -50,7 +47,12 @@ const SearchScreen: React.FC = () => {
     <ScreenWithPlayer>
       <View style={styles.container}>
         <TextInput
-          style={styles.searchInput}
+          style={{
+            backgroundColor: themeColors.inputTextBackground,
+            ...styles.searchInput,
+          }}
+          placeholderTextColor={themeColors.inputTextPlaceholderColor}
+          textColor={themeColors.inputTextColor}
           placeholder="Search for songs..."
           value={query}
           onChangeText={setQuery}
@@ -79,11 +81,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "white",
   },
   searchInput: {
     height: 40,
-    borderColor: "gray",
+    borderColor: "gray", //TODO revisar en tema (separar en componente?)
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
