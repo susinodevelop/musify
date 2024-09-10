@@ -30,9 +30,13 @@ const TrackHorizontalCard: React.FC<TrackHorizontalCardProps> = ({ track }) => {
             <Text style={{ color: themeColors.title, ...styles.title }}>
               {track.title}
             </Text>
-            <Text style={{ color: themeColors.text, ...styles.description }}>
-              {track.description}
-            </Text>
+            {track.description && (
+              <Text style={{ color: themeColors.text, ...styles.description }}>
+                {track.description.length > 50
+                  ? track.description.slice(0, 50) + "..."
+                  : track.description}
+              </Text>
+            )}
             <Text style={{ color: themeColors.text, ...styles.duration }}>
               {track.duration}
             </Text>
@@ -51,15 +55,15 @@ const TrackHorizontalCard: React.FC<TrackHorizontalCardProps> = ({ track }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    borderRadius: 8,
+    borderRadius: 15,
     padding: 10,
-    marginBottom: 16,
+    marginBottom: 20,
     alignItems: "center",
     width: "90%",
     elevation: 4,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 1,
+    shadowRadius: 5,
   },
   image: {
     width: 60,
@@ -71,11 +75,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   },
   description: {
-    fontSize: 14,
+    fontSize: 12,
     marginVertical: 4,
   },
   duration: {

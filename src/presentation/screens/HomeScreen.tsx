@@ -6,7 +6,7 @@ import { TextInput } from "react-native-paper";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { BottomNavigatorStackParams } from "@/presentation/navigation/BottomNavigator";
 import TrackEntity from "@/domain/entities/TrackEntity";
-import { useRepositories } from "../context/AppContext";
+import { useRepositories } from "../context/RepositoryContext";
 import ScreenWithPlayer from "../components/ScreenWithPlayer";
 import { ThemeContext } from "../context/ThemeContext";
 

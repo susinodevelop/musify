@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import DrawerNavigator from "@/presentation/navigation/DrawerNavigator";
 import { PlayerProvider } from "@/presentation/context/PlayerContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { RepositoryProvider } from "@/presentation/context/AppContext";
+import { RepositoryProvider } from "@/presentation/context/RepositoryContext";
 import {
   ThemeContext,
   ThemeProvider,

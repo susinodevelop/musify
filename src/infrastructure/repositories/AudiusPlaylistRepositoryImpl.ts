@@ -52,8 +52,8 @@ export default class AudiusPlaylistRepositoryImpl
   }
 
   async getTracks(id: string): Promise<TrackEntity[]> {
-    const response = await axios.get(`${AudiusConfig.API_URL}/playlists/${id}`);
-    const tracks = response.data.data[0].tracks;
+    const response = await axios.get(`${AudiusConfig.API_URL}/playlists/${id}/tracks`);
+    const tracks = response.data.data;
     return TrackMapper.toEntities(tracks);
   }
 }

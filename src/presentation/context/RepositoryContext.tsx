@@ -7,14 +7,14 @@ import { container } from "inversify/inversify.config";
 import { TYPES } from "inversify/types";
 import { createContext } from "react";
 
-interface AppContextType {
+export interface RepositoryContextType {
   artistRepository: ArtistRepository;
   playlistRepository: PlaylistRepository;
   trackRepository: TrackRepository;
   userRepository: UserRepository;
 }
 
-const RepositoryContext = createContext<AppContextType | undefined>(undefined);
+const RepositoryContext = createContext<RepositoryContextType | undefined>(undefined);
 
 export const RepositoryProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -42,7 +42,7 @@ export const RepositoryProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useRepositories = (): AppContextType => {
+export const useRepositories = (): RepositoryContextType => {
   const context = React.useContext(RepositoryContext);
   if (context === undefined) {
     throw new Error("useRepositories must be used within a RepositoryProvider");

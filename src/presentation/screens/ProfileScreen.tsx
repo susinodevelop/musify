@@ -4,7 +4,7 @@ import { List, Avatar, Divider, ActivityIndicator } from "react-native-paper";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
 import UserEntity from "@/domain/entities/UserEntity";
-import { useRepositories } from "../context/AppContext";
+import { useRepositories } from "../context/RepositoryContext";
 import Screen from "../components/Screen";
 import { ThemeContext } from "../context/ThemeContext";
 

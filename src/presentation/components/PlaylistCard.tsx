@@ -1,8 +1,9 @@
 import PlaylistEntity from "@/domain/entities/PlaylistEntity";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Card, Text } from "react-native-paper";
 import { ThemeContext } from "../context/ThemeContext";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
+import PlaylistModal from "./PlaylistModal";
 
 interface PlaylistCardProps {
   playlist: PlaylistEntity;
@@ -10,28 +11,44 @@ interface PlaylistCardProps {
 
 const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist }) => {
   const { themeColors } = useContext(ThemeContext);
+
+  const [modalVisible, setModalVisible] = useState(false);
   //TODO revisar para que sea navegable y estilizar en tema dark
+
+  const openPlaylistModal = () => {
+    setModalVisible(true);
+  };
+
   return (
-    <Card
-      style={{
-        backgroundColor: themeColors.playlistCardBackground,
-        shadowColor: themeColors.playlistCardShadow,
-        ...styles.gridItem,
-      }}
-    >
-      <Card.Cover
-        source={{ uri: playlist.cover }}
-        style={styles.gridItemCover}
+    <>
+      <Pressable onPress={openPlaylistModal}>
+        <Card
+          style={{
+            backgroundColor: themeColors.playlistCardBackground,
+            shadowColor: themeColors.playlistCardShadow,
+            ...styles.gridItem,
+          }}
+        >
+          <Card.Cover
+            source={{ uri: playlist.cover }}
+            style={styles.gridItemCover}
+          />
+          <Card.Content>
+            <Text variant="titleMedium" style={{ color: themeColors.title }}>
+              {playlist.title}
+            </Text>
+            <Text variant="bodyMedium" style={{ color: themeColors.text }}>
+              {playlist.totalTracks} - Canciones
+            </Text>
+          </Card.Content>
+        </Card>
+      </Pressable>
+      <PlaylistModal
+        playlist={playlist}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
       />
-      <Card.Content>
-        <Text variant="titleMedium" style={{ color: themeColors.title }}>
-          {playlist.title}
-        </Text>
-        <Text variant="bodyMedium" style={{ color: themeColors.text }}>
-          {playlist.totalTracks} - Canciones
-        </Text>
-      </Card.Content>
-    </Card>
+    </>
   );
 };
 

@@ -11,7 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import TrackHorizontalCard from "@/presentation/components/TrackHorizontalCard";
 import PlaylistEntity from "@/domain/entities/PlaylistEntity";
 import TrackEntity from "@/domain/entities/TrackEntity";
-import { useRepositories } from "../context/AppContext";
+import { useRepositories } from "../context/RepositoryContext";
 import { ThemeContext } from "../context/ThemeContext";
 import ScreenWithPlayer from "../components/ScreenWithPlayer";
 

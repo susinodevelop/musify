@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { Audio, AVPlaybackSourceObject, AVPlaybackStatusToSet } from "expo-av";
 import TrackEntity from "@/domain/entities/TrackEntity";
-import { useRepositories } from "./AppContext";
+import { useRepositories } from "./RepositoryContext";
 
 interface PlayerContextType {
   track: TrackEntity | null;

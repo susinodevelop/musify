@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, ActivityIndicator, FlatList, StyleSheet } from "react-native";
 import TrackHorizontalCard from "@/presentation/components/TrackHorizontalCard";
 import TrackEntity from "@/domain/entities/TrackEntity";
-import { useRepositories } from "../context/AppContext";
+import { useRepositories } from "../context/RepositoryContext";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { BottomNavigatorStackParams } from "../navigation/BottomNavigator";
 import ScreenWithPlayer from "../components/ScreenWithPlayer";
