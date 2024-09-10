@@ -2,7 +2,7 @@ import ArtistEntity from "@/domain/entities/ArtistEntity";
 import PlaylistEntity from "@/domain/entities/PlaylistEntity";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import React, { useContext, useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet, Image } from "react-native";
+import { View, ScrollView, StyleSheet, Image, Pressable } from "react-native";
 import { Button, Text, List } from "react-native-paper";
 import { useRepositories } from "../context/RepositoryContext";
 import ScreenWithPlayer from "../components/ScreenWithPlayer";
@@ -10,11 +10,13 @@ import { ThemeContext } from "../context/ThemeContext";
 import TrackCard from "../components/TrackCard";
 import PlaylistCard from "../components/PlaylistCard";
 import AritstCard from "../components/ArtistCard";
+import { PlayerContext } from "../context/PlayerContext";
 
 const LibraryScreen: React.FC = () => {
   const { themeColors } = useContext(ThemeContext);
   const { trackRepository, playlistRepository, artistRepository } =
     useRepositories();
+  const { load } = useContext(PlayerContext);
   const [playlists, setPlaylists] = useState<PlaylistEntity[]>([]);
   const [tracks, setTracks] = useState<TrackEntity[]>([]);
   const [artists, setArtists] = useState<ArtistEntity[]>([]);
@@ -65,21 +67,22 @@ const LibraryScreen: React.FC = () => {
 
             <List.Section>
               {tracks.map((track) => (
-                <List.Item
-                  key={track.id}
-                  title={track.title}
-                  description={`${track.artist.name} - ${track.genre}`}
-                  titleStyle={{ color: themeColors.title }}
-                  descriptionStyle={{ color: themeColors.text }}
-                  left={() => (
-                    <Image
-                      source={{ uri: track.cover }}
-                      width={50}
-                      height={50}
-                      borderRadius={5}
-                    />
-                  )}
-                />
+                <Pressable key={track.id} onPress={() => load(track)}>
+                  <List.Item
+                    title={track.title}
+                    description={`${track.artist.name} - ${track.genre}`}
+                    titleStyle={{ color: themeColors.title }}
+                    descriptionStyle={{ color: themeColors.text }}
+                    left={() => (
+                      <Image
+                        source={{ uri: track.cover }}
+                        width={50}
+                        height={50}
+                        borderRadius={5}
+                      />
+                    )}
+                  />
+                </Pressable>
               ))}
             </List.Section>
           </View>
@@ -121,16 +124,25 @@ const LibraryScreen: React.FC = () => {
             </Text>
             <List.Section>
               {tracks.map((track) => (
-                <List.Item
-                  key={track.id}
-                  title={track.title}
-                  description={track.description}
-                  titleStyle={{ color: themeColors.title }}
-                  descriptionStyle={{ color: themeColors.text }}
-                  left={() => (
-                    <List.Icon icon="history" color={themeColors.text} />
-                  )}
-                />
+                <Pressable key={track.id} onPress={() => load(track)}>
+                  <List.Item
+                    title={track.title}
+                    description={track.description}
+                    titleStyle={{ color: themeColors.title }}
+                    descriptionStyle={{ color: themeColors.text }}
+                    left={() => (
+                      <List.Icon icon="history" color={themeColors.text} />
+                    )}
+                    right={() => (
+                      <Image
+                        source={{ uri: track.cover }}
+                        width={50}
+                        height={50}
+                        style={{ borderRadius: 5, marginLeft: 10 }}
+                      />
+                    )}
+                  />
+                </Pressable>
               ))}
             </List.Section>
           </View>
