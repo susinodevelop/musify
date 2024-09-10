@@ -2,8 +2,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import React, { useContext } from "react";
 import { IconButton } from "react-native-paper";
 import ConfigurationScreen from "@/presentation/screens/ConfigurationScreen";
-import SupportScreen from "@/presentation/screens/SupportScreen";
-import CloseSessionScreen from "@/presentation/screens/CloseSessionScreen";
+import InformationScreen from "@/presentation/screens/InformationScreen";
 import BottomNavigator from "./BottomNavigator";
 import { ThemeContext } from "../context/ThemeContext";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -58,11 +57,23 @@ const DrawerNavigator: React.FC = () => {
       <DrawerTab.Screen
         name="BottomTabNavigator"
         component={BottomNavigator}
-        options={{ drawerLabel: "Volver" }}
+        options={{ drawerLabel: "Volver", title: "Inicio" }}
       />
-      <DrawerTab.Screen name="Configuration" component={ConfigurationScreen} />
-      <DrawerTab.Screen name="Profile" component={ProfileScreen} />
-      <DrawerTab.Screen name="Support" component={SupportScreen} />
+      <DrawerTab.Screen
+        name="Configuration"
+        component={ConfigurationScreen}
+        options={{ drawerLabel: "Configuración", title: "Configuración" }}
+      />
+      <DrawerTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ drawerLabel: "Perfil", title: "Perfil" }}
+      />
+      <DrawerTab.Screen
+        name="Support"
+        component={InformationScreen}
+        options={{ drawerLabel: "Información", title: "Información" }}
+      />
     </DrawerTab.Navigator>
   );
 };

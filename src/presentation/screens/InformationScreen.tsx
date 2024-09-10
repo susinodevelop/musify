@@ -6,9 +6,10 @@ import { ThemeContext } from "../context/ThemeContext";
 const SupportScreen = () => {
   const { themeColors } = useContext(ThemeContext);
 
+  //TODO añadir informacion sobre el desarrollo y proyecto
   return (
     <Screen>
-      <Text style={{ color: themeColors.text }}>Support Screen</Text>
+      <Text style={{ color: themeColors.text }}>Information Screen</Text>
     </Screen>
   );
 };

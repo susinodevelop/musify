@@ -56,10 +56,26 @@ const BottomNavigator: React.FC = () => {
         },
       })}
     >
-      <BottomTab.Screen name="Home" component={HomeScreen} />
-      <BottomTab.Screen name="Explore" component={ExploreScreen} />
-      <BottomTab.Screen name="Search" component={SearchScreen} />
-      <BottomTab.Screen name="Library" component={LibraryScreen} />
+      <BottomTab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ tabBarLabel: "Inicio" }}
+      />
+      <BottomTab.Screen
+        name="Explore"
+        component={ExploreScreen}
+        options={{ tabBarLabel: "Explorar" }}
+      />
+      <BottomTab.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{ tabBarLabel: "Buscar" }}
+      />
+      <BottomTab.Screen
+        name="Library"
+        component={LibraryScreen}
+        options={{ tabBarLabel: "Biblioteca" }}
+      />
     </BottomTab.Navigator>
   );
 };
