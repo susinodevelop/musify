@@ -7,6 +7,7 @@ import PlaylistEntity from "@/domain/entities/PlaylistEntity";
 import PlaylistCard from "../components/PlaylistCard";
 import { ScrollView } from "react-native-gesture-handler";
 
+//TODO mejorar pantalla
 const ExploreScreen = () => {
   const { playlistRepository } = useRepositories();
   const { themeColors } = useContext(ThemeContext);
@@ -49,7 +50,7 @@ const ExploreScreen = () => {
         <Text style={[styles.sectionTitle, { color: themeColors.text }]}>
           Tus Playlists
         </Text>
-        {/* Aquí puedes añadir otra FlatList para las playlists del usuario */}
+        {/*TODO  Aquí puedes añadir otra FlatList para las playlists del usuario */}
       </ScrollView>
     </ScreenWithPlayer>
   );
