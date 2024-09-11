@@ -84,7 +84,7 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
           </View>
         ) : (
           <View style={styles.reproductorContainer}>
-            <ActivityIndicator />
+            <ActivityIndicator color={themeColors.activityIndicator}/>
           </View>
         )}
       </View>

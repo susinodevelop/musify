@@ -45,22 +45,29 @@ const SearchScreen: React.FC = () => {
 
   return (
     <ScreenWithPlayer>
-      <View style={styles.container}>
-        <TextInput
-          style={{
-            backgroundColor: themeColors.inputTextBackground,
-            ...styles.searchInput,
-          }}
-          placeholderTextColor={themeColors.inputTextPlaceholderColor}
-          textColor={themeColors.inputTextColor}
-          placeholder="Search for songs..."
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={handleSearch}
-        />
-        {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : (
+      {loading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator
+            size="large"
+            color={themeColors.activityIndicator}
+          />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          <TextInput
+            style={{
+              backgroundColor: themeColors.inputTextBackground,
+              ...styles.searchInput,
+            }}
+            placeholderTextColor={themeColors.inputTextPlaceholderColor}
+            textColor={themeColors.inputTextColor}
+            placeholder="Search for songs..."
+            value={query}
+            onChangeText={setQuery}
+            onSubmitEditing={handleSearch}
+          />
           <FlatList
             data={tracks}
             keyExtractor={(item) => item.id}
@@ -71,8 +78,8 @@ const SearchScreen: React.FC = () => {
             )}
             contentContainerStyle={styles.listContent}
           />
-        )}
-      </View>
+        </View>
+      )}
     </ScreenWithPlayer>
   );
 };

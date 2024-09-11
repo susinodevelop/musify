@@ -131,7 +131,7 @@ const ProfileScreen: React.FC = () => {
   ) : (
     <Screen>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={themeColors.activityIndicator} />
       </View>
     </Screen>
   );

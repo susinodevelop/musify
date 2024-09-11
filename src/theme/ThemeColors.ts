@@ -1,4 +1,5 @@
 export interface ThemeColors {
+  activityIndicator: string;
   title: string;
   titleShadow: string;
   text: string;
@@ -36,6 +37,7 @@ export interface ThemeColors {
 }
 
 export const lightTheme: ThemeColors = {
+  activityIndicator: "blue",
   title: "black",
   titleShadow: "lightgray",
   text: "black",
@@ -73,6 +75,7 @@ export const lightTheme: ThemeColors = {
 };
 
 export const darkTheme: ThemeColors = {
+  activityIndicator: "orange",
   title: "white",
   titleShadow: "darkgray",
   text: "white",
