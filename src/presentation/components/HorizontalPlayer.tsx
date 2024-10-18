@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import TrackEntity from "@/domain/entities/TrackEntity";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import DraggableProgressBar from "./DraggableProgressBar";
 import { ActivityIndicator, IconButton } from "react-native-paper";
 import { PlayerContext } from "../context/PlayerContext";
 import { ThemeContext } from "../context/ThemeContext";
+import PlayerModal from "./PlayerModal";
 
 interface HorizontalPlayerProps {
   track: TrackEntity;
@@ -12,6 +13,7 @@ interface HorizontalPlayerProps {
 
 const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
   const { themeColors } = useContext(ThemeContext);
+  const [modalVisible, setModalVisible] = useState(false);
   const {
     track: currentTrack,
     isLoaded,
@@ -43,52 +45,63 @@ const HorizontalPlayer: React.FC<HorizontalPlayerProps> = ({ track }) => {
     return isPlaying && currentTrack!.id === track.id;
   };
 
+  const handleNavigationPress = () => {
+    setModalVisible(true);
+  };
+
   return (
-    <Pressable>
-      <View
-        style={{
-          backgroundColor: themeColors.horizontalPlayerBackground,
-          shadowColor: themeColors.horizontalPlayerShadow,
-          ...styles.container,
-        }}
-      >
-        <Image source={{ uri: track.cover }} style={styles.image} />
-        <View style={styles.details}>
-          <Text style={{ color: themeColors.title, ...styles.title }}>
-            {track.title}
-          </Text>
+    <>
+      <Pressable onPress={handleNavigationPress}>
+        <View
+          style={{
+            backgroundColor: themeColors.horizontalPlayerBackground,
+            shadowColor: themeColors.horizontalPlayerShadow,
+            ...styles.container,
+          }}
+        >
+          <Image source={{ uri: track.cover }} style={styles.image} />
+          <View style={styles.details}>
+            <Text style={{ color: themeColors.title, ...styles.title }}>
+              {track.title}
+            </Text>
 
-          <DraggableProgressBar
-            width={200}
-            progress={currentTrack?.id === track.id ? progress : 0}
-            setProgress={updateProgress}
-            allowDragging={isCurrentPlaying()}
-          />
-          <View style={styles.timeContainer}>
-            <Text
-              style={{ color: themeColors.text, ...styles.time }}
-            >{`${progressInMinutes} / `}</Text>
-            <Text
-              style={{ color: themeColors.text, ...styles.duration }}
-            >{`${durationInMinutes} min`}</Text>
-          </View>
-        </View>
-
-        {isLoaded ? (
-          <View style={styles.reproductorContainer}>
-            <IconButton
-              icon={isCurrentPlaying() ? "pause" : "play"}
-              size={40}
-              onPress={togglePlayPause}
+            <DraggableProgressBar
+              width={200}
+              progress={currentTrack?.id === track.id ? progress : 0}
+              setProgress={updateProgress}
+              allowDragging={isCurrentPlaying()}
             />
+            <View style={styles.timeContainer}>
+              <Text
+                style={{ color: themeColors.text, ...styles.time }}
+              >{`${progressInMinutes} / `}</Text>
+              <Text
+                style={{ color: themeColors.text, ...styles.duration }}
+              >{`${durationInMinutes} min`}</Text>
+            </View>
           </View>
-        ) : (
-          <View style={styles.reproductorContainer}>
-            <ActivityIndicator color={themeColors.activityIndicator}/>
-          </View>
-        )}
-      </View>
-    </Pressable>
+
+          {isLoaded ? (
+            <View style={styles.reproductorContainer}>
+              <IconButton
+                icon={isCurrentPlaying() ? "pause" : "play"}
+                size={40}
+                onPress={togglePlayPause}
+              />
+            </View>
+          ) : (
+            <View style={styles.reproductorContainer}>
+              <ActivityIndicator color={themeColors.activityIndicator} />
+            </View>
+          )}
+        </View>
+      </Pressable>
+      <PlayerModal
+        track={track}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+    </>
   );
 };
 

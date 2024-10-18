@@ -43,7 +43,7 @@ const TrackHorizontalCard: React.FC<TrackHorizontalCardProps> = ({ track }) => {
           </View>
         </View>
       </Pressable>
-      <PlayerModal
+      <PlayerModal 
         track={track}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
