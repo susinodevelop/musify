@@ -42,8 +42,12 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
     }
   };
 
-  const isCurrentPlaying = () => {
+  const isCurrentTrackPlaying = () => {
     return isPlaying && currentTrack!.id === track.id;
+  };
+
+  const isCurrentTrack = () => {
+    return currentTrack?.id === track.id;
   };
 
   return (
@@ -108,7 +112,7 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
               onPress={() => alert("Previous")}
             />
             <IconButton
-              icon={isCurrentPlaying() ? "pause" : "play"}
+              icon={isCurrentTrackPlaying() ? "pause" : "play"}
               size={40}
               onPress={togglePlayPause}
             />
@@ -127,9 +131,9 @@ const PlayerModal: React.FC<PlayerModalProps> = ({
           <View style={{ height: 50 }}>
             <DraggableProgressBar
               width={300}
-              progress={isCurrentPlaying() ? progress : 0}
+              progress={isCurrentTrack() ? progress : 0}
               setProgress={updateProgress}
-              allowDragging={isCurrentPlaying()}
+              allowDragging={isCurrentTrack()}
             />
           </View>
 
