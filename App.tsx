@@ -10,6 +10,7 @@ import {
   ThemeProvider,
 } from "@/presentation/context/ThemeContext";
 import { StatusBar } from "react-native";
+import { AppProvider } from "@/presentation/context/AppContext";
 
 export default function App() {
   return (
@@ -17,9 +18,11 @@ export default function App() {
       <PaperProvider>
         <RepositoryProvider>
           <PlayerProvider>
-            <NavigationContainer>
-              <AppContent />
-            </NavigationContainer>
+            <AppProvider>
+              <NavigationContainer>
+                <AppContent />
+              </NavigationContainer>
+            </AppProvider>
           </PlayerProvider>
         </RepositoryProvider>
       </PaperProvider>

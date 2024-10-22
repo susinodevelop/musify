@@ -34,6 +34,10 @@ export interface ThemeColors {
   playerModalContainerBackground: string;
   playerModalBackground: string;
   playerModalCloseButton: string;
+  okButton: string;
+  okButtonPressed: string;
+  okButtonText: string;
+  okButtonTextPressed: string;
 }
 
 export const lightTheme: ThemeColors = {
@@ -72,6 +76,10 @@ export const lightTheme: ThemeColors = {
   playerModalContainerBackground: "rgba(0, 0, 0, 0.5)",
   playerModalBackground: "#fff",
   playerModalCloseButton: "black",
+  okButton: "blue",
+  okButtonPressed: "darkblue",
+  okButtonText: "white",
+  okButtonTextPressed: "white",
 };
 
 export const darkTheme: ThemeColors = {
@@ -110,4 +118,8 @@ export const darkTheme: ThemeColors = {
   playerModalContainerBackground: "rgba(0, 0, 0, 0.5)",
   playerModalBackground: "#111111",
   playerModalCloseButton: "gray",
+  okButton: "lightorange",
+  okButtonPressed: "orange",
+  okButtonText: "black",
+  okButtonTextPressed: "black",
 };

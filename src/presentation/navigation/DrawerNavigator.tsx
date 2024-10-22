@@ -1,11 +1,14 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IconButton } from "react-native-paper";
 import ConfigurationScreen from "@/presentation/screens/ConfigurationScreen";
 import InformationScreen from "@/presentation/screens/InformationScreen";
 import BottomNavigator from "./BottomNavigator";
 import { ThemeContext } from "../context/ThemeContext";
 import ProfileScreen from "../screens/ProfileScreen";
+import IntroSlideshow from "../screens/introduction/IntroSlideshow";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppContext } from "../context/AppContext";
 
 export type DrawerNavigatorStackParams = {
   BottomTabNavigator: undefined;
@@ -18,6 +21,27 @@ const DrawerTab = createDrawerNavigator<DrawerNavigatorStackParams>();
 
 const DrawerNavigator: React.FC = () => {
   const { themeColors } = useContext(ThemeContext);
+  const { isFirstTime, setFirstTime } = useContext(AppContext);
+
+  const checkFirstTime = async () => {
+    try {
+      const isFirstTimeStored = await AsyncStorage.getItem("isFirstTime");
+      if (isFirstTimeStored === null || isFirstTimeStored === "true") {
+        setFirstTime(true);
+        await AsyncStorage.setItem("isFirstTime", "true");
+      }
+    } catch (error) {
+      console.error("Error al acceder a AsyncStorage", error);
+    }
+  };
+
+  useEffect(() => {
+    checkFirstTime();
+  }, []);
+
+  if (isFirstTime) {
+    return <IntroSlideshow />;
+  }
 
   return (
     <DrawerTab.Navigator
